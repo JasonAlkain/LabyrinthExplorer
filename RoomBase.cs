@@ -1,23 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Enums;
+using Utilities;
 
 namespace RoomNamespace
 {
-    public class RoomBase
+    public class RoomBase : Utils
     {
+        public uint RoomID;
+
+        public string Header;
+        public string Description;
+
+        public bool bSearched;
+        public bool HasCard;
+
         public Dictionary<string, DoorWay> Doors;
 
         public CardType Card;
 
-
-        public DoorWay CreateDoor()
-        {
-            return (DoorWay)new Random().Next(-1, 2);
-        }
-        public CardType CreateCard()
-        {
-            return (CardType)new Random().Next(0, 3);
-        }
     }
 }
