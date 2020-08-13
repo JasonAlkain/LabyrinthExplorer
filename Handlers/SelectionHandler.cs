@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Text;
-using System.Threading;
+using System.Collections.Generic;
+using Enums;
 using LabyrinthExplorer;
 using GameplayNamespace;
-using Handlers;
-using Utilities;
 
 namespace Handlers
 {
-    public class SelectionHandler : GameplayNamespace.Gameplay
+    public class SelectionHandler : Gameplay
     {
         public new void NewGame()
         {
@@ -27,54 +25,57 @@ namespace Handlers
         {
             while (true)
             {
-                StringBuilder sb = new StringBuilder();
-
-                foreach (string action in actions)
-                {
-                    sb.Append($"[{action}]");
-                }
-
-                Print($"\n[Actions ~|{sb.ToString()}|~ ]");
-
-                Print("\n#>| ");
-                _Input = Console.ReadLine() ?? "";
-                _Input = Capitalize(_Input.ToLower());
-
-                Thread.Sleep(500);
-
-                ReadInput(_Input);
+                BaseActions();
+                InterpretInput(ReadInput());
             }
         }
 
-        protected static void ReadInput(string input)
+        protected static void InterpretInput(string input)
         {
+
             switch (input)
             {
+                case "Dev":
+                    DevOptions();
+                    break;
+                case "Use":
+                    Print("Not available yet.\n");
+                    break;
+                case "Look":
+                    Print("\n");
+                    PrintDoors();
+                    break;
                 case "Search":
-                    Search.Room(_RoomCard);
+                    Search.Room();
                     break;
                 case "Take":
                     Take.RmCard(_RoomCard);
                     break;
+                case "I":
                 case "Inventory":
                     Player.ShowInvetory();
                     break;
+                case "N":
                 case "North":
                     CheckDoor(input);
                     break;
+                case "E":
                 case "East":
                     CheckDoor(input);
                     break;
+                case "W":
                 case "West":
                     CheckDoor(input);
                     break;
+                case "S":
                 case "South":
                     CheckDoor(input);
                     break;
+                case "Q":
+                case "L":
                 case "Quit":
                 case "Leave":
-                    Console.Clear();
-                    Menu._Main();
+                    LeaveGame();
                     break;
                 default:
                     Print("\nThat command is not recognized.");
@@ -84,5 +85,72 @@ namespace Handlers
             }
 
         }
+
+        protected static void DevOptions()
+        {
+            actions = new List<string>();
+            actions.Add("Item");
+            actions.Add("Omen");
+            actions.Add("Leave");
+            while (true)
+            {
+
+                Print("What would you like to do?");
+                string input = ReadInput();
+
+                switch (input)
+                {
+                    case "Item":
+                        Player.Cards.Add(CardType.Item);
+                        Print("~{Added an item to your inventory}~.\n");
+                        break;
+                    case "Omen":
+                        Player.Cards.Add(CardType.Omen);
+                        Print("~{Added an Omen card to your inventory}~.\n");
+                        break;
+                    case "Leave":
+                        Actions();
+                        break;
+                    default:
+                        Print("\nThat command is not recognized.");
+                        Console.ReadKey();
+                        Print("\n\n");
+                        break;
+                }
+            }
+
+        }
+
+        public static void LeaveGame()
+        {
+            Print("Are you sure you want to leave the game?");
+            Print("You will have to start from square one if you do.");
+
+            actions = new List<string>(){"Yes", "No"};
+
+            switch (ReadInput())
+            {
+                case "Yes":
+                    Console.Clear();
+                    Menu._Main();
+                    break;
+                case "No":
+                    Actions();
+                    break;
+                default:
+                    Print("\nThat command is not recognized.");
+                    Console.ReadKey();
+                    Print("\n\n");
+                    break;
+            }
+
+
+        }
+    }
+
+    // I don't know why this is here yet.
+    // But I might someday.
+    internal class SelectionHandlerImpl : SelectionHandler
+    {
     }
 }

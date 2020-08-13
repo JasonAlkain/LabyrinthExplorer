@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using System.Threading;
-using LabyrinthExplorer;
-using Enums;
 using GameplayNamespace;
 
 namespace Handlers
@@ -12,17 +11,24 @@ namespace Handlers
     {
         public static void _Main()
         {
+            string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+
             actions = new List<string>() { "New Game", "Load", "Quit"};
             StringBuilder sb = new StringBuilder();
 
             foreach (string action in actions)
             {
-                sb.Append($"[{action}]");
+                sb.Append($"\n [{action}]");
             }
-
-            Print("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
-            Print("~~ Main Menu ~~\n");
-            Print($"\n[Actions ~|{sb.ToString()}|~ ]");
+            Print("\n\n");
+            Print($"\n[  Version: {version}  ]\n");
+            Print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+            Print("~~~~~~~~~~ Labyrinth Explorer ~~~~~~~~~~\n");
+            Print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n");
+            Print("~~~~~~~~~~~~~~~~~~~~~\n");
+            Print("~~~~~ Main Menu ~~~~~\n");
+            Print("~~~~~~~~~~~~~~~~~~~~~");
+            Print($"{sb.ToString()}\n");
             Print("\n#>| ");
 
             _Input = Console.ReadLine() ?? " ";
@@ -30,12 +36,15 @@ namespace Handlers
 
             switch (_Input)
             {
+                case "n":
                 case "new":
                 case "new game":
                     Console.Clear();
                     NewGame();
                     break;
+                case "l":
                 case "load":
+                case "load game":
                     Print("\n\nThis option is not ready yet.");
                     Print("\n#>| ");
                     Console.ReadKey();
@@ -43,6 +52,9 @@ namespace Handlers
                     Thread.Sleep(500);
                     _Main();
                     break;
+                case "e":
+                case "q":
+                case "exit":
                 case "quit":
                     Quit();
                     break;

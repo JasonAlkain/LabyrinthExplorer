@@ -1,10 +1,7 @@
 ﻿using System;
-using LabyrinthExplorer;
 
 namespace Utilities
 {
-    public class Print{ public Print(string line) => Console.Write(line);}
-
     
     public class Utils { 
         public static string Capitalize(string input)
@@ -18,6 +15,12 @@ namespace Utilities
             return s;
         }
 
-        protected static void Print(string line) => Console.Write(line);
+        public static void Print(string line) => Console.Write(line);
+
+        public static int GetEnumCount<T>()
+        {
+            var count = Enum.GetNames(typeof(T)).Length;
+            return count;
+        }
     }
 }

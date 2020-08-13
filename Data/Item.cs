@@ -1,9 +1,7 @@
 ﻿namespace LabyrinthExplorer.Data
 {
-    public struct Item
+    public class Item : Card
     {
-        public string Name;
-        public string Description;
 
     }
 }

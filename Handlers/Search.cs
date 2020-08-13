@@ -1,5 +1,4 @@
 ﻿using System;
-using LabyrinthExplorer;
 using Enums;
 using GameplayNamespace;
 
@@ -7,11 +6,19 @@ namespace Handlers
 {
     public class Search : Gameplay
     {
-        public static void Room(CardType card)
+        /// <summary>
+        /// This function handles what happens when you search a room.
+        /// </summary>
+        public static void Room()
         {
-            if (actions.Contains("Search"))
+            // Check if the room has been searched.
+            if (!_Room.bSearched)
             {
-                switch (card)
+                // Set this room to searched.
+                _Room.bSearched = true;
+
+                // Display what the player found in the room.
+                switch (_Room.Card)
                 {
                     case CardType.None:
                         Print("There is nothing in this room.\n");
@@ -20,22 +27,22 @@ namespace Handlers
                         Print("Something happens.\n");
                         break;
                     case CardType.Omen:
-                        Print($"A card with the word {card} is written on it.\n");
+                        Print($"A card with the word {_Room.Card} is written on it.\n");
+                        _Room.HasCard = true;
                         break;
                     case CardType.Item:
-                        Print($"You found an {card}. Maybe it will come in handy.\n");
+                        Print($"You found an {_Room.Card}. Maybe it will come in handy.\n");
+                        _Room.HasCard = true;
                         break;
                 }
 
-                if (card != CardType.None && card != CardType.Event)
-                    actions.Add("Take");
-
-                actions.Remove("Search");
             }
             else
             {
+                // If the player has already searched the room
+                // let them now what they found if anything.
                 string s;
-                switch (card)
+                switch (_Room.Card)
                 {
                     case CardType.None:
                         s = "This room had nothing in it.";
@@ -50,7 +57,7 @@ namespace Handlers
                         s = "You found an item in this room.";
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(card), card, null);
+                        throw new ArgumentOutOfRangeException(nameof(_Room.Card), _Room.Card, null);
                 }
                 Print($"{s}\n");
             }

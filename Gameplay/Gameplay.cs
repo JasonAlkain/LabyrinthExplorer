@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading;
 using LabyrinthExplorer;
-using GameplayNamespace;
 using Enums;
+using LabyrinthExplorer.Data;
 
 namespace GameplayNamespace
 {
@@ -12,13 +13,20 @@ namespace GameplayNamespace
 
         public void Setup()
         {
-            gl = new GameLoop();
             Player.Cards = new List<CardType>();
+            Player.Inventory = new List<Card>();
+
+            GameplayData.CardList = new List<Card>();
         }
 
         protected static void Quit()
         {
-            Print("\n\n~~ Thank you for playing! ~~\n\n");
+            Console.Clear();
+            Print("\n\n\n\n");
+            Print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+            Print("~~~~~ Thank you for playing! ~~~~~\n");
+            Print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n");
+            Thread.Sleep(1500);
             Environment.Exit(0);
         }
 
@@ -35,62 +43,36 @@ namespace GameplayNamespace
 
             Thread.Sleep(3250);
 
+
+            Player.Inventory.Add(new Card(){Name = "Bag"});
+
             GameLoop.ExploreNewRoom();
         }
 
-        public void SearchRoom(CardType card)
+        protected static void BaseActions()
         {
-            if (actions.Contains("Search"))
-            {
-                switch (room.Card)
-                {
-                    case CardType.None:
-                        Print("There is nothing in this room.\n");
-                        break;
-                    case CardType.Event:
-                        Print("Something happens.\n");
-                        break;
-                    case CardType.Omen:
-                        Print($"A card with the word {room.Card} is written on it.\n");
-                        break;
-                    case CardType.Item:
-                        Print($"You found an {room.Card}. Maybe it will come in handy.\n");
-                        break;
-                }
 
-                if (card != CardType.None)
-                    actions.Add("Take");
+            // Set up basic Actions for each new _Room
+            actions = new List<string>();
+            
+            actions.Add("(L)eave/(Q)uit");
+            actions.Add("Look");
+            actions.Add("(N)orth");
+            actions.Add("(E)ast");
+            actions.Add("(W)est");
+            actions.Add("(S)outh");
+            actions.Add("(I)nventory");
+            
+            if(_Room.bSearched == false)
+                actions.Add("Search");
 
-                actions.Remove("Search");
-            }
-            else
-            {
-                string s;
-                switch (card)
-                {
-                    case CardType.None:
-                        s = "This room had nothing in it.";
-                        break;
-                    case CardType.Event:
-                        s = "Something already happened in this room.";
-                        break;
-                    case CardType.Omen:
-                        s = "An Omen has appeared. Best be careful.";
-                        break;
-                    case CardType.Item:
-                        s = "You found an item in this room.";
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(card), card, null);
-                }
-                Print($"{s}\n");
-            }
-
+            if(_Room.HasCard)
+                actions.Add("Take");
         }
-        
+
         public static void CheckDoor(string doorName)
         {
-            switch (room.Doors[doorName])
+            switch (_Room.Doors[doorName])
             {
                 case DoorWay.Open:
                     Print("\nYou try the door and with some luck it opens.\n\n");
@@ -111,6 +93,58 @@ namespace GameplayNamespace
 
         }
 
+        public static void PrintDoors()
+        {
 
+            // Print what the doors look like
+            foreach (var door in _Room.Doors)
+            {
+                string doorAvail = "";
+                switch (door.Value)
+                {
+                    case DoorWay.None:
+                        doorAvail += "-] There is a frame but no door.\n";
+                        doorAvail += "-] Like a random frame was put on the wall.\n";
+                        break;
+                    case DoorWay.Blocked:
+                        doorAvail += "-] The door has a board nailed to the frame.\n";
+                        doorAvail += "-] Covering the door and preventing it from moving.\n";
+                        break;
+                    case DoorWay.Open:
+                        doorAvail += "-] This door has a normal looking handle.\n";
+                        doorAvail += "-] Maybe it will lead somewhere.\n";
+                        break;
+                    case DoorWay.Locked:
+                        doorAvail += "-] This door has a normal looking handle.\n";
+                        doorAvail += "-] Maybe it will lead somewhere.\n";
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
+                Print($"The door frame {door.Key}:\n{doorAvail}\n");
+
+                Thread.Sleep(1250);
+            }
+        }
+
+        public static string ReadInput()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            foreach (string action in actions)
+            {
+                sb.Append($"[{action}]");
+            }
+
+            Print($"\n[Actions ~|{sb.ToString()}|~ ]");
+
+            Print("\n#>| ");
+            _Input = Console.ReadLine() ?? "";
+
+            Thread.Sleep(500);
+
+            return Capitalize(_Input.ToLower());
+        }
     }
 }
