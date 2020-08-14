@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Enums;
 using LabyrinthExplorer;
@@ -57,18 +57,22 @@ namespace Handlers
                     break;
                 case "N":
                 case "North":
+                    input = "North";
                     CheckDoor(input);
                     break;
                 case "E":
                 case "East":
+                    input = "East";
                     CheckDoor(input);
                     break;
                 case "W":
                 case "West":
+                    input = "West";
                     CheckDoor(input);
                     break;
                 case "S":
                 case "South":
+                    input = "South";
                     CheckDoor(input);
                     break;
                 case "Q":
@@ -126,7 +130,7 @@ namespace Handlers
             Print("Are you sure you want to leave the game?");
             Print("You will have to start from square one if you do.");
 
-            actions = new List<string>(){"Yes", "No"};
+            actions = new List<string>() { "Yes", "No" };
 
             switch (ReadInput())
             {
