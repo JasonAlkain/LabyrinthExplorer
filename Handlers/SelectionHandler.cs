@@ -96,11 +96,13 @@ namespace Handlers
             actions.Add("Item");
             actions.Add("Omen");
             actions.Add("Leave");
+            actions.Add("Set Max Room Count");
             while (true)
             {
 
                 Print("What would you like to do?");
                 string input = ReadInput();
+                input = Capitalize(input);
 
                 switch (input)
                 {
@@ -114,6 +116,9 @@ namespace Handlers
                         break;
                     case "Leave":
                         Actions();
+                        break;
+                    case "Max":
+                        roomCount = UInt32.MaxValue-1;
                         break;
                     default:
                         Print("\nThat command is not recognized.");

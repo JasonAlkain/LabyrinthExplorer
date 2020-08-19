@@ -8,12 +8,11 @@ namespace GameplayNamespace
 {
     public class GameplayData : Utils
     {
-        public static Room _Room;
-        protected static int roomCount = 0;
-        public static CardType _RoomCard;
-        public static string _Input = "";
-        public static List<string> actions = new List<string>();
-        public static List<Card> CardList;
-
+        public static Room _Room { get; set; }
+        public static uint roomCount { get; set; }
+        public static CardType _RoomCard { get; set; }
+        public static string _Input { get; set; }
+        public static List<string> actions { get; set; }
+        public static List<Card> CardList { get; set; }
     }
 }

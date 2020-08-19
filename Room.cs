@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Enums;
+using GameplayNamespace;
 
 namespace RoomNamespace
 {
@@ -12,7 +13,7 @@ namespace RoomNamespace
         public void CreateRoom()
         {
             if(RoomID < uint.MaxValue-1)
-                RoomID++;
+                RoomID = GameplayData.roomCount;
 
             bSearched = false;
 

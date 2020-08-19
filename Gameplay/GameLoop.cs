@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using Enums;
 using Handlers;
 using RoomNamespace;
@@ -15,7 +16,14 @@ namespace GameplayNamespace
             _Room = new Room();
 
             // Increment _Room count
-            roomCount++;
+            if(roomCount < UInt32.MaxValue-1)
+                roomCount++;
+            else
+            {
+                Print("You have found the way out!!");
+
+                Menu._Main();
+            }
 
             // Set up the Actions first available in the _Room
             BaseActions();

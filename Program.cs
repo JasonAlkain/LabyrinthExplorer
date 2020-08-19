@@ -1,5 +1,6 @@
 ﻿using GameplayNamespace;
 using Handlers;
+using System.Data;
 
 namespace LabyrinthExplorer
 {
@@ -9,10 +10,7 @@ namespace LabyrinthExplorer
         {
             var gameplay = new Gameplay();
             gameplay.Setup();
-
             Menu._Main();
-
-            //Console.ReadKey();
         }
 
     }
