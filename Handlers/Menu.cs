@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using GameplayNamespace;
+using static System.Collections.Specialized.BitVector32;
 
 namespace Handlers
 {
@@ -15,11 +16,8 @@ namespace Handlers
 
             actions = new List<string>() { "New Game", "Load", "Quit"};
             StringBuilder sb = new StringBuilder();
+            actions.ForEach(action => sb.Append($"\n [{action}]"));
 
-            foreach (string action in actions)
-            {
-                sb.Append($"\n [{action}]");
-            }
             Print("\n\n");
             Print($"\n[  Version: {version}  ]\n");
             Print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");

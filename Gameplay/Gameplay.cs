@@ -43,7 +43,6 @@ namespace GameplayNamespace
 
             Thread.Sleep(3250);
 
-
             Player.Inventory.Add(new Card(){Name = "Bag"});
 
             GameLoop.ExploreNewRoom();
@@ -137,7 +136,7 @@ namespace GameplayNamespace
                 sb.Append($"[{action}]");
             }
 
-            Print($"\n[Actions ~|{sb.ToString()}|~ ]");
+            Print($"\n[Actions ~|{sb}|~ ]");
 
             Print("\n#>| ");
             _Input = Console.ReadLine() ?? "";
