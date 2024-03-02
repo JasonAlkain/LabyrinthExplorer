@@ -2,15 +2,17 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <RootNamespace>LabyrinthExplorer</RootNamespace>
     <AssemblyName>LabyrinthExplorer</AssemblyName>
     <Version>0.1.2</Version>
-    <Authors>Alkain Studios LLC</Authors>
-    <Company>Alkain Studios LLC</Company>
+    <Authors>AGE Studios</Authors>
+    <Company>AGE Studios</Company>
     <NeutralLanguage>en-US</NeutralLanguage>
     <FileVersion>0.1.2.0</FileVersion>
     <AssemblyVersion>0.1.2.0</AssemblyVersion>
+    <StartupObject>LabyrinthExplorer.Program</StartupObject>
+    <Copyright>MIT</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
