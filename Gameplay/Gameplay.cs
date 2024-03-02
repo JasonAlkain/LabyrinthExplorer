@@ -6,20 +6,30 @@ using LabyrinthExplorer;
 using Enums;
 using LabyrinthExplorer.Data;
 using Utilities;
+using System.Numerics;
 
 namespace GameplayNamespace
 {
     public class Gameplay
     {
+        // ====================================================================================================
+        // Functions
+        // ====================================================================================================
         public static void Printf(string s) => new Print(s);
+        /// <summary>
+        /// 
+        /// </summary>
         public void Setup()
         {
-            Player.Cards = new List<CardType>();
-            Player.Inventory = new List<Card>();
-
-            GameplayData.CardList = new List<Card>();
+            new Player();
+            int nameIndex = new Random().Next(0, Names.ListOfNames.Count - 1);
+            Player.Name = Names.ListOfNames[nameIndex];
+            new GameplayData();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected static void Quit()
         {
             Console.Clear();
@@ -30,7 +40,9 @@ namespace GameplayNamespace
             Thread.Sleep(1500);
             Environment.Exit(0);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         protected static void NewGame()
         {
             Printf("\n----------------------------------------------------\n");
