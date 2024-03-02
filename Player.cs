@@ -8,7 +8,14 @@ namespace LabyrinthExplorer
     public class Player
     {
         public static string Name { get; set; }
-        public static int Sanity { get; set; }
+        private static Notifier<int> _Sanity;
+
+        public static int Sanity { 
+            get { return _Sanity.Prop; }
+            set { _Sanity.Prop = value; }
+        }
+
+
 
 
         //public static List<CardType> Cards;
@@ -19,6 +26,7 @@ namespace LabyrinthExplorer
         {
             Name = "";
             Sanity = 10;
+            
             Inventory = new List<Card>();
         }
         
