@@ -5,12 +5,13 @@ using System.Threading;
 using LabyrinthExplorer;
 using Enums;
 using LabyrinthExplorer.Data;
+using Utilities;
 
 namespace GameplayNamespace
 {
-    public class Gameplay : GameplayData
+    public class Gameplay
     {
-
+        public static void Printf(string s) => new Print(s);
         public void Setup()
         {
             Player.Cards = new List<CardType>();
@@ -22,28 +23,30 @@ namespace GameplayNamespace
         protected static void Quit()
         {
             Console.Clear();
-            Print("\n\n\n\n");
-            Print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
-            Print("~~~~~ Thank you for playing! ~~~~~\n");
-            Print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n");
+            Printf("\n\n\n\n");
+            Printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+            Printf("~~~~~ Thank you for playing! ~~~~~\n");
+            Printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n");
             Thread.Sleep(1500);
             Environment.Exit(0);
         }
 
         protected static void NewGame()
         {
-            Print("\n----------------------------------------------------\n");
-            Print("~~~~~~  Welcome to the Labyrinth  ~~~~~~");
-            Print("\n----------------------------------------------------\n\n");
-            Print("No two rooms lead to the same place nor can you\n");
-            Print("backtrack to where you were.\n");
-            Print("The Labyrinth is alive and there is only one way out.\n");
-            Print("Good luck adventurer! We hope you can find the way out.\n");
-            Print("\n----------------------------------------------------\n");
+            Printf("\n----------------------------------------------------\n");
+            Printf("~~~~~~  Welcome to the Labyrinth  ~~~~~~");
+            Printf("\n----------------------------------------------------\n\n");
+            Printf("No two rooms lead to the same place nor can you\n");
+            Printf("backtrack to where you were.\n");
+            Printf("The Labyrinth is alive and there is only one way out.\n");
+            Printf("Good luck adventurer! We hope you can find the way out.\n");
+            Printf("\n----------------------------------------------------\n");
 
             Thread.Sleep(3250);
 
-            Player.Inventory.Add(new Card(){Name = "Bag"});
+            var bag = new Card() { Name = "Bag", Description = "Somthing to hold things." };
+
+            Player.Inventory.Add(bag);
 
             GameLoop.ExploreNewRoom();
         }
@@ -52,40 +55,43 @@ namespace GameplayNamespace
         {
 
             // Set up basic Actions for each new _Room
-            actions = new List<string>();
+            var actions = new List<string>
+            {
+                "(L)eave/(Q)uit",
+                "Look",
+                "(N)orth",
+                "(E)ast",
+                "(W)est",
+                "(S)outh",
+                "(I)nventory"
+            };
             
-            actions.Add("(L)eave/(Q)uit");
-            actions.Add("Look");
-            actions.Add("(N)orth");
-            actions.Add("(E)ast");
-            actions.Add("(W)est");
-            actions.Add("(S)outh");
-            actions.Add("(I)nventory");
-            
-            if(_Room.bSearched == false)
+            if(GameplayData._Room.bSearched == false)
                 actions.Add("Search");
 
-            if(_Room.HasCard)
+            if(GameplayData._Room.HasCard)
                 actions.Add("Take");
+
+            GameplayData.actions = actions;
         }
 
         public static void CheckDoor(string doorName)
         {
-            switch (_Room.Doors[doorName])
+            switch (GameplayData._Room.Doors[doorName])
             {
                 case DoorWay.Open:
-                    Print("\nYou try the door and with some luck it opens.\n\n");
+                    Printf("\nYou try the door and with some luck it opens.\n\n");
                     GameLoop.ExploreNewRoom();
                     break;
                 case DoorWay.Blocked:
-                    Print("The door is blocked board and won't budge.\n");
+                    Printf("The door is blocked board and won't budge.\n");
                     break;
                 case DoorWay.Locked:
-                    Print("You try the door but to no avail.\n" +
+                    Printf("You try the door but to no avail.\n" +
                           "It is locked and won't open.\n");
                     break;
                 case DoorWay.None:
-                    Print("You examine the frame and see the frame looks\n" +
+                    Printf("You examine the frame and see it looks\n" +
                           " more like it is built into the wall.\n");
                     break;
             }
@@ -96,7 +102,7 @@ namespace GameplayNamespace
         {
 
             // Print what the doors look like
-            foreach (var door in _Room.Doors)
+            foreach (var door in GameplayData._Room.Doors)
             {
                 string doorAvail = "";
                 switch (door.Value)
@@ -121,7 +127,7 @@ namespace GameplayNamespace
                         throw new ArgumentOutOfRangeException();
                 }
 
-                Print($"The door frame {door.Key}:\n{doorAvail}\n");
+                Printf($"The door frame {door.Key}:\n{doorAvail}\n");
 
                 Thread.Sleep(1250);
             }
@@ -131,19 +137,19 @@ namespace GameplayNamespace
         {
             StringBuilder sb = new StringBuilder();
 
-            foreach (string action in actions)
+            foreach (string action in GameplayData.actions)
             {
                 sb.Append($"[{action}]");
             }
 
-            Print($"\n[Actions ~|{sb}|~ ]");
+            Printf($"\n[Actions ~|{sb}|~ ]");
 
-            Print("\n#>| ");
-            _Input = Console.ReadLine() ?? "";
+            Printf("\n#>| ");
+            GameplayData._Input = Console.ReadLine() ?? "";
 
             Thread.Sleep(500);
 
-            return Capitalize(_Input.ToLower());
+            return Utils.Capitalize(GameplayData._Input.ToLower());
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Enums;
 using LabyrinthExplorer;
 using GameplayNamespace;
+using LabyrinthExplorer.Data;
 
 namespace Handlers
 {
@@ -10,14 +11,14 @@ namespace Handlers
     {
         public new void NewGame()
         {
-            Print("\n----------------------------------------------------\n");
-            Print("~~~~~~  Welcome to the Labyrinth  ~~~~~~");
-            Print("\n----------------------------------------------------\n\n");
-            Print("No two rooms lead to the same place nor can you\n");
-            Print("backtrack to where you were.\n");
-            Print("The Labyrinth is alive and there is only one way out.\n");
-            Print("Good luck adventurer! We hope you can find the way out.\n");
-            Print("\n----------------------------------------------------\n");
+            Printf("\n----------------------------------------------------\n");
+            Printf("~~~~~~  Welcome to the Labyrinth  ~~~~~~");
+            Printf("\n----------------------------------------------------\n\n");
+            Printf("No two rooms lead to the same place nor can you\n");
+            Printf("backtrack to where you were.\n");
+            Printf("The Labyrinth is alive and there is only one way out.\n");
+            Printf("Good luck adventurer! We hope you can find the way out.\n");
+            Printf("\n----------------------------------------------------\n");
             GameLoop.ExploreNewRoom();
         }
 
@@ -39,17 +40,17 @@ namespace Handlers
                     DevOptions();
                     break;
                 case "Use":
-                    Print("Not available yet.\n");
+                    Printf("Not available yet.\n");
                     break;
                 case "Look":
-                    Print("\n");
+                    Printf("\n");
                     PrintDoors();
                     break;
                 case "Search":
                     Search.Room();
                     break;
                 case "Take":
-                    Take.RmCard(_RoomCard);
+                    Take.DrawCard(GameplayData._RoomCard);
                     break;
                 case "I":
                 case "Inventory":
@@ -82,9 +83,9 @@ namespace Handlers
                     LeaveGame();
                     break;
                 default:
-                    Print("\nThat command is not recognized.");
+                    Printf("\nThat command is not recognized.");
                     Console.ReadKey();
-                    Print("\n\n");
+                    Printf("\n\n");
                     break;
             }
 
@@ -92,33 +93,35 @@ namespace Handlers
 
         protected static void DevOptions()
         {
-            actions = new List<string>();
-            actions.Add("Item");
-            actions.Add("Omen");
-            actions.Add("Leave");
+            GameplayData.actions = ["Item", "Omen", "Leave"];
+            Random rnd = new Random();
             while (true)
             {
-
-                Print("What would you like to do?");
+                int index = 0;
+                Printf("What would you like to do?");
                 string input = ReadInput();
 
                 switch (input)
                 {
                     case "Item":
-                        Player.Cards.Add(CardType.Item);
-                        Print("~{Added an item to your inventory}~.\n");
+                        index = rnd.Next(0, BaseCardList.ItemCards.Count);
+                        Player.Inventory.Add(BaseCardList.ItemCards[index]);
+                        Printf("~{Added an item to your inventory}~.\n");
+                        Printf($"~{BaseCardList.ItemCards[index].Name}~.\n");
                         break;
                     case "Omen":
-                        Player.Cards.Add(CardType.Omen);
-                        Print("~{Added an Omen card to your inventory}~.\n");
+                        index = rnd.Next(0, BaseCardList.OmenCards.Count);
+                        Player.Inventory.Add(BaseCardList.OmenCards[index]);
+                        Printf("~{Added an Omen card to your inventory}~.\n");
+                        Printf($"~{BaseCardList.OmenCards[index].Name}~.\n");
                         break;
                     case "Leave":
                         Actions();
                         break;
                     default:
-                        Print("\nThat command is not recognized.");
+                        Printf("\nThat command is not recognized.");
                         Console.ReadKey();
-                        Print("\n\n");
+                        Printf("\n\n");
                         break;
                 }
             }
@@ -127,10 +130,10 @@ namespace Handlers
 
         public static void LeaveGame()
         {
-            Print("Are you sure you want to leave the game?");
-            Print("You will have to start from square one if you do.");
+            Printf("Are you sure you want to leave the game?");
+            Printf("You will have to start from square one if you do.");
 
-            actions = new List<string>() { "Yes", "No" };
+            GameplayData.actions = new List<string>() { "Yes", "No" };
 
             switch (ReadInput())
             {
@@ -142,9 +145,9 @@ namespace Handlers
                     Actions();
                     break;
                 default:
-                    Print("\nThat command is not recognized.");
+                    Printf("\nThat command is not recognized.");
                     Console.ReadKey();
-                    Print("\n\n");
+                    Printf("\n\n");
                     break;
             }
 

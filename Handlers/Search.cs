@@ -12,27 +12,27 @@ namespace Handlers
         public static void Room()
         {
             // Check if the room has been searched.
-            if (!_Room.bSearched)
+            if (!GameplayData._Room.bSearched)
             {
                 // Set this room to searched.
-                _Room.bSearched = true;
+                GameplayData._Room.bSearched = true;
 
                 // Display what the player found in the room.
-                switch (_Room.Card)
+                switch (GameplayData._Room.Card)
                 {
                     case CardType.None:
-                        Print("There is nothing in this room.\n");
+                        Printf("There is nothing in this room.\n");
                         break;
                     case CardType.Event:
-                        Print("Something happens.\n");
+                        Printf("Something happens.\n");
                         break;
                     case CardType.Omen:
-                        Print($"A card with the word {_Room.Card} is written on it.\n");
-                        _Room.HasCard = true;
+                        Printf($"A card with the word {GameplayData._Room.Card} is written on it.\n");
+                        GameplayData._Room.HasCard = true;
                         break;
                     case CardType.Item:
-                        Print($"You found an {_Room.Card}. Maybe it will come in handy.\n");
-                        _Room.HasCard = true;
+                        Printf($"You found an {GameplayData._Room.Card}. Maybe it will come in handy.\n");
+                        GameplayData._Room.HasCard = true;
                         break;
                 }
 
@@ -42,7 +42,7 @@ namespace Handlers
                 // If the player has already searched the room
                 // let them now what they found if anything.
                 string s;
-                switch (_Room.Card)
+                switch (GameplayData._Room.Card)
                 {
                     case CardType.None:
                         s = "This room had nothing in it.";
@@ -57,9 +57,9 @@ namespace Handlers
                         s = "You found an item in this room.";
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(_Room.Card), _Room.Card, null);
+                        throw new ArgumentOutOfRangeException(nameof(GameplayData._Room.Card), GameplayData._Room.Card, null);
                 }
-                Print($"{s}\n");
+                Printf($"{s}\n");
             }
 
         }

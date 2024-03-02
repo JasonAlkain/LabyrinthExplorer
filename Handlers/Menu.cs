@@ -4,7 +4,6 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using GameplayNamespace;
-using static System.Collections.Specialized.BitVector32;
 
 namespace Handlers
 {
@@ -14,25 +13,25 @@ namespace Handlers
         {
             string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
-            actions = new List<string>() { "New Game", "Load", "Quit"};
+            GameplayData.actions = new List<string>() { "New Game", "Load", "Quit"};
             StringBuilder sb = new StringBuilder();
-            actions.ForEach(action => sb.Append($"\n [{action}]"));
+            GameplayData.actions.ForEach(action => sb.Append($"\n [{action}]"));
 
-            Print("\n\n");
-            Print($"\n[  Version: {version}  ]\n");
-            Print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
-            Print("~~~~~~~~~~ Labyrinth Explorer ~~~~~~~~~~\n");
-            Print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n");
-            Print("~~~~~~~~~~~~~~~~~~~~~\n");
-            Print("~~~~~ Main Menu ~~~~~\n");
-            Print("~~~~~~~~~~~~~~~~~~~~~");
-            Print($"{sb.ToString()}\n");
-            Print("\n#>| ");
+            Printf("\n\n");
+            Printf($"\n[  Version: {version}  ]\n");
+            Printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+            Printf("~~~~~~~~~~ Labyrinth Explorer ~~~~~~~~~~\n");
+            Printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n");
+            Printf("~~~~~~~~~~~~~~~~~~~~~\n");
+            Printf("~~~~~ Main Menu ~~~~~\n");
+            Printf("~~~~~~~~~~~~~~~~~~~~~");
+            Printf($"{sb.ToString()}\n");
+            Printf("\n#>| ");
 
-            _Input = Console.ReadLine() ?? " ";
-            _Input = _Input.ToLower();
+            GameplayData._Input = Console.ReadLine() ?? " ";
+            GameplayData._Input = GameplayData._Input.ToLower();
 
-            switch (_Input)
+            switch (GameplayData._Input)
             {
                 case "n":
                 case "new":
@@ -43,8 +42,8 @@ namespace Handlers
                 case "l":
                 case "load":
                 case "load game":
-                    Print("\n\nThis option is not ready yet.");
-                    Print("\n#>| ");
+                    Printf("\n\nThis option is not ready yet.");
+                    Printf("\n#>| ");
                     Console.ReadKey();
                     Console.Clear();
                     Thread.Sleep(500);

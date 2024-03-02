@@ -7,19 +7,14 @@ namespace LabyrinthExplorer
 {
     public class Player
     {
+        string Name { get; set; }
         public static List<CardType> Cards;
         public static List<Card> Inventory;
         public static void ShowInvetory()
         {
-            foreach (var item in Inventory)
-            {
-                Utils.Print($"[ {item.Name} ] ");
-            }
+            Inventory.ForEach(item => Utils.Print($"[ {item.Name} ] "));
         }
     }
 
-
-    // I don't know why this is here yet.
-    // But I might someday.
     internal class PlayerImpl : Player { }
 }

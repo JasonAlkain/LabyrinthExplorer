@@ -4,7 +4,7 @@ using Utilities;
 
 namespace RoomNamespace
 {
-    public class RoomBase : Utils
+    public class RoomBase
     {
         public uint RoomID;
 
@@ -18,5 +18,6 @@ namespace RoomNamespace
 
         public CardType Card;
 
+        public static void Printf(string s) => new Print(s);
     }
 }

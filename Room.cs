@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Enums;
+using GameplayNamespace;
 
 namespace RoomNamespace
 {
@@ -16,34 +17,41 @@ namespace RoomNamespace
 
             bSearched = false;
 
-            Doors = new Dictionary<string, DoorWay>();
+            Doors = new Dictionary<string, DoorWay>
+            {
+                { "North", GenerateDoorType() },
+                { "East", GenerateDoorType() },
+                { "West", GenerateDoorType() },
+                { "South", GenerateDoorType() }
+            };
 
-            Doors.Add("North", GenerateDoorType());
-            Doors.Add("East", GenerateDoorType());
-            Doors.Add("West", GenerateDoorType());
-            Doors.Add("South", GenerateDoorType());
-            
-            SetRoomHeader();
-            SetRoomDesc();
+            // Check if there is at least one open door
+            if (!Doors.ContainsValue(DoorWay.Open))
+                Doors["North"] = DoorWay.Open; // if not make it the forward door
+
+            Header = SetRoomHeader();
+            Description = SetRoomDesc();
 
             // Print the info to the console
-            Print("\n----------------------------------------------------\n");
-            Print($"~~~~~~  {Header}  ~~~~~~");
-            Print("\n----------------------------------------------------\n");
-            Print(Description);
-            Print("----------------------------------------------------\n");
+            Printf("\n----------------------------------------------------\n");
+            Printf($"~~~~~~  {Header}  ~~~~~~");
+            Printf("\n----------------------------------------------------\n");
+            Printf(Description);
+            Printf("----------------------------------------------------\n");
 
 
             Card = RoomID > 0 ? GenerateCardType() : CardType.None;
+
+            //Have an Event happen when the room has an event card type
         }
 
-        void SetRoomHeader()
+        string SetRoomHeader()
         {
             // Check if this is the first _Room and set the opening accordingly 
-            Header = RoomID < 2 ? "You have entered the Labyrinth." : "You explore a new room.";
+            return RoomID < 2 ? "You have entered the Labyrinth." : "You explore a new room.";
         }
 
-        void SetRoomDesc()
+        string SetRoomDesc()
         {
             string roomDesc = "";
 
@@ -56,7 +64,7 @@ namespace RoomNamespace
                 roomDesc += "There is a table in the center of the room.\n";
                 roomDesc += "On the table is an empty bag.\n";
                 roomDesc += "You take the bag and sling it over your shoulders.\n";
-                roomDesc += $"There is a number on the ceiling that reads {RoomID}.\n";
+                roomDesc += $"There is a number on the ceiling, {RoomID}.\n";
                 roomDesc += "\n";
             }
             else
@@ -65,10 +73,10 @@ namespace RoomNamespace
                 roomDesc += "It's a little different from the previous room.\n";
                 roomDesc += "The door behind you closes hard.\n";
                 roomDesc += "You hear a click come from the door.\n";
-                roomDesc += $"There is a number on the ceiling that reads {RoomID}.\n\n";
+                roomDesc += $"There is a number on the ceiling, {RoomID}.\n\n";
             }
 
-            Description = roomDesc;
+            return roomDesc;
         }
 
         /// <summary>
@@ -77,7 +85,7 @@ namespace RoomNamespace
         /// <returns>Random DoorType</returns>
         public DoorWay GenerateDoorType()
         {
-            return (DoorWay)new Random().Next(-1, 2);
+            return (DoorWay)new Random().Next(-1, 3);
         }
 
         /// <summary>

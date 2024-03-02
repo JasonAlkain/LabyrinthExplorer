@@ -12,25 +12,19 @@ namespace GameplayNamespace
         {
             // Pause for effect
             Thread.Sleep(1000);
-            _Room = new Room();
+            GameplayData._Room = new Room();
 
             // Increment _Room count
-            roomCount++;
+            GameplayData.roomCount++;
 
             // Set up the Actions first available in the _Room
             BaseActions();
 
             // Create a new _Room for the player to explore
-            _Room.CreateRoom();
-
-            // Check if there is at least one open door
-            if (!_Room.Doors.ContainsValue(DoorWay.Open))
-                _Room.Doors["North"] = DoorWay.Open; // if not make it the forward door
-
-            
+            GameplayData._Room.CreateRoom();
 
             // Once created set the current _Room card to an instance for later
-            _RoomCard = _Room.Card;
+            GameplayData._RoomCard = GameplayData._Room.Card;
 
             Thread.Sleep(1250);
             //PrintDoors();

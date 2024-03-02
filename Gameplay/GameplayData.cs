@@ -6,10 +6,10 @@ using Utilities;
 
 namespace GameplayNamespace
 {
-    public class GameplayData : Utils
+    public class GameplayData
     {
         public static Room _Room;
-        protected static int roomCount = 0;
+        public static int roomCount = 0;
         public static CardType _RoomCard;
         public static string _Input = "";
         public static List<string> actions = new List<string>();

@@ -3,44 +3,47 @@ using LabyrinthExplorer;
 using Enums;
 using GameplayNamespace;
 using LabyrinthExplorer.Data;
+using Utilities;
 
 namespace Handlers
 {
     public class Take : GameplayData
     {
-        public static void RmCard(CardType card)
+        public static void DrawCard(CardType cardType)
         {
             if (actions.Contains("Take"))
             {
                 // Remove the take action for the list of actions
                 actions.Remove("Take");
 
-                //Player.Cards.Add(card);
+                //Player.Cards.Add(cardType);
                 int count = 0;
                 Card newCard;
+                int omenCount = BaseCardList.OmenCards.Count + 1;
+                int itemCount = BaseCardList.ItemCards.Count + 1;
+                Random rnd = new Random();
 
-                switch (card)
+                switch (cardType)
                 {
                     case CardType.Omen:
-                        count = BaseCardList.OmenCards.Count;
-                        var rndOmen = new Random().Next(0, count - 1);
+                        var rndOmen = rnd.Next(0, omenCount);
                         newCard = BaseCardList.OmenCards[rndOmen];
                         Player.Inventory.Add(newCard);
                         _Room.HasCard = false;
-                        Print($"You pick up a card with the word {card} written on it.");
+                        Utils.Print($"You pick up a card with the word {cardType} written on it.");
                         break;
 
                     case CardType.Item:
                         count = BaseCardList.ItemCards.Count;
-                        var rndItem = new Random().Next(0, count - 1);
+                        var rndItem = new Random().Next(0, itemCount);
                         newCard = BaseCardList.ItemCards[rndItem];
                         Player.Inventory.Add(newCard);
                         _Room.HasCard = false;
-                        Print($"You pick up an {card}.");
+                        Utils.Print($"You pick up an {cardType}.");
                         break;
 
                     default:
-                        Print("There is nothing to take in this room.");
+                        Utils.Print("There is nothing to take in this room.");
                         break;
 
                 }
@@ -48,7 +51,7 @@ namespace Handlers
             }
             else
             {
-                Print($"There is nothing to take.");
+                Utils.Print($"There is nothing to take.");
             }
 
         }

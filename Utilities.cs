@@ -1,26 +1,39 @@
 ﻿using System;
+using System.Globalization;
 
 namespace Utilities
 {
-    
-    public class Utils { 
+    public static class Utils
+    {
         public static string Capitalize(string input)
         {
+            TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
+
             // Check for empty string.
-            string s = string.IsNullOrEmpty(input) ? 
-                string.Empty : 
-                char.ToUpper(input[0]) + input.Substring(1);
-            
+            string result = string.IsNullOrEmpty(input) ?
+                string.Empty :
+                textInfo.ToTitleCase(input);
             // Return char and concat substring.
-            return s;
+            return result;
         }
 
         public static void Print(string line) => Console.Write(line);
 
         public static int GetEnumCount<T>()
         {
-            var count = Enum.GetNames(typeof(T)).Length;
+            int count = Enum.GetNames(typeof(T)).Length;
             return count;
         }
+    }
+
+    public class Print
+    {
+        //public Print(string _string)
+        //{
+        //    Console.WriteLine(_string);
+        //}
+
+
+        public Print(string _string) => Console.WriteLine(_string);
     }
 }
