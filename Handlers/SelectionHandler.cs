@@ -104,13 +104,13 @@ namespace Handlers
                 switch (input)
                 {
                     case "Item":
-                        index = rnd.Next(0, BaseCardList.ItemCards.Count);
+                        index = rnd.Next(0, BaseCardList.ItemCards.Count-1);
                         Player.Inventory.Add(BaseCardList.ItemCards[index]);
                         Printf("~{Added an item to your inventory}~.\n");
                         Printf($"~{BaseCardList.ItemCards[index].Name}~.\n");
                         break;
                     case "Omen":
-                        index = rnd.Next(0, BaseCardList.OmenCards.Count);
+                        index = rnd.Next(0, BaseCardList.OmenCards.Count-1);
                         Player.Inventory.Add(BaseCardList.OmenCards[index]);
                         Printf("~{Added an Omen card to your inventory}~.\n");
                         Printf($"~{BaseCardList.OmenCards[index].Name}~.\n");
