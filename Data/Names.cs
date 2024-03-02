@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace LabyrinthExplorer.Data
 {
-    internal class Names
+    public static class Names
     {
-        public List<string> genderNeutralNames = new List<string>
+        public static List<string> ListOfNames = new List<string>
         {
             "Ava",
             "Alex",
