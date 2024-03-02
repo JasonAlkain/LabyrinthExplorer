@@ -19,8 +19,8 @@ namespace Handlers
                 //Player.Cards.Add(cardType);
                 int count = 0;
                 Card newCard;
-                int omenCount = BaseCardList.OmenCards.Count + 1;
-                int itemCount = BaseCardList.ItemCards.Count + 1;
+                int omenCount = BaseCardList.OmenCards.Count - 1;
+                int itemCount = BaseCardList.ItemCards.Count - 1;
                 Random rnd = new Random();
 
                 switch (cardType)
@@ -34,7 +34,7 @@ namespace Handlers
                         break;
 
                     case CardType.Item:
-                        count = BaseCardList.ItemCards.Count;
+                        count = BaseCardList.ItemCards.Count-1;
                         var rndItem = new Random().Next(0, itemCount);
                         newCard = BaseCardList.ItemCards[rndItem];
                         Player.Inventory.Add(newCard);
