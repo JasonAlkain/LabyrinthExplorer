@@ -34,6 +34,6 @@ namespace Utilities
         //}
 
 
-        public Print(string _string) => Console.WriteLine(_string);
+        public Print(string _string) => Console.Write(_string);
     }
 }
