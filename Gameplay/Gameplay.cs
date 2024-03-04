@@ -7,6 +7,7 @@ using Enums;
 using LabyrinthExplorer.Data;
 using Utilities;
 using System.Numerics;
+using RoomNamespace;
 
 namespace GameplayNamespace
 {
@@ -30,7 +31,7 @@ namespace GameplayNamespace
         /// <summary>
         /// 
         /// </summary>
-        protected static void Quit()
+        public static void Quit()
         {
             Console.Clear();
             Printf("\n\n\n\n");
@@ -43,7 +44,7 @@ namespace GameplayNamespace
         /// <summary>
         /// 
         /// </summary>
-        protected static void NewGame()
+        public static void NewGame()
         {
             Printf("\n----------------------------------------------------\n");
             Printf("~~~~~~  Welcome to the Labyrinth  ~~~~~~");
@@ -63,9 +64,8 @@ namespace GameplayNamespace
             GameLoop.ExploreNewRoom();
         }
 
-        protected static void BaseActions()
+        public static void BaseActions()
         {
-
             // Set up basic Actions for each new _Room
             var actions = new List<string>
             {
@@ -157,11 +157,11 @@ namespace GameplayNamespace
             Printf($"\n[Actions ~|{sb}|~ ]");
 
             Printf("\n#>| ");
-            GameplayData._Input = Console.ReadLine() ?? "";
+            GameplayData.Input = Console.ReadLine() ?? "";
 
             Thread.Sleep(500);
 
-            return Utils.Capitalize(GameplayData._Input.ToLower());
+            return Utils.Capitalize(GameplayData.Input.ToLower());
         }
     }
 }
