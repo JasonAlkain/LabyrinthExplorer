@@ -5,7 +5,7 @@ using RoomNamespace;
 
 namespace GameplayNamespace
 {
-    public class GameLoop : Gameplay
+    public class GameLoop
     {
 
         public static void ExploreNewRoom()
@@ -15,16 +15,16 @@ namespace GameplayNamespace
             GameplayData._Room = new Room();
 
             // Increment _Room count
-            GameplayData.roomCount++;
+            //GameplayData.roomCount++;
 
             // Set up the Actions first available in the _Room
-            BaseActions();
+            Gameplay.BaseActions();
 
             // Create a new _Room for the player to explore
             GameplayData._Room.CreateRoom();
 
             // Once created set the current _Room card to an instance for later
-            GameplayData._RoomCard = GameplayData._Room.Card;
+            //GameplayData._RoomCard = GameplayData._Room.Card;
 
             Thread.Sleep(1250);
             //PrintDoors();
