@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Enums;
 using GameplayNamespace;
+using Utilities;
 
 namespace RoomNamespace
 {
@@ -33,12 +34,13 @@ namespace RoomNamespace
             Description = SetRoomDesc();
 
             // Print the info to the console
-            Printf("\n----------------------------------------------------\n");
-            Printf($"~~~~~~  {Header}  ~~~~~~");
-            Printf("\n----------------------------------------------------\n");
-            Printf(Description);
-            Printf("----------------------------------------------------\n");
-
+            string s = string.Empty;
+            s += ("\n----------------------------------------------------\n");
+            s += ($"~~~~~~  {Header}  ~~~~~~");
+            s += ("\n----------------------------------------------------\n");
+            s += (Description);
+            s += ("----------------------------------------------------\n");
+            new Print(s);
 
             Card = RoomID > 0 ? GenerateCardType() : CardType.None;
 
@@ -95,6 +97,34 @@ namespace RoomNamespace
         public CardType GenerateCardType()
         {
             return (CardType)new Random().Next(0, 4);
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="doorName"></param>
+        public static void CheckDoor(string doorName)
+        {
+            switch (Doors[doorName])
+            {
+                case DoorWay.Open:
+                    Printf("\nYou try the door and with some luck it opens.\n\n");
+                    GameLoop.ExploreNewRoom();
+                    break;
+                case DoorWay.Blocked:
+                    Printf("The door is blocked board and won't budge.\n");
+                    break;
+                case DoorWay.Locked:
+                    Printf("You try the door but to no avail.\n" +
+                          "It is locked and won't open.\n");
+                    break;
+                case DoorWay.None:
+                    Printf("You examine the frame and see it looks\n" +
+                          " more like it is built into the wall.\n");
+                    break;
+            }
+
         }
     }
 }
