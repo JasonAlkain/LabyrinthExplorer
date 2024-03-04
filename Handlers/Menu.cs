@@ -4,11 +4,13 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using GameplayNamespace;
+using Utilities;
 
 namespace Handlers
 {
-    public class Menu : Gameplay
+    public class Menu
     {
+        public static void Printf(string s) => new Print(s);
         public static void _Main()
         {
             string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
@@ -28,16 +30,16 @@ namespace Handlers
             Printf($"{sb.ToString()}\n");
             Printf("\n#>| ");
 
-            GameplayData._Input = Console.ReadLine() ?? " ";
-            GameplayData._Input = GameplayData._Input.ToLower();
+            GameplayData.Input = Console.ReadLine() ?? " ";
+            GameplayData.Input = GameplayData.Input.ToLower();
 
-            switch (GameplayData._Input)
+            switch (GameplayData.Input)
             {
                 case "n":
                 case "new":
                 case "new game":
                     Console.Clear();
-                    NewGame();
+                    Gameplay.NewGame();
                     break;
                 case "l":
                 case "load":
@@ -53,7 +55,7 @@ namespace Handlers
                 case "q":
                 case "exit":
                 case "quit":
-                    Quit();
+                    Gameplay.Quit();
                     break;
                 default:
                     Console.Clear();
