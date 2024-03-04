@@ -7,17 +7,12 @@ namespace RoomNamespace
     public class RoomBase
     {
         public uint RoomID;
-
         public string Header;
         public string Description;
-
         public bool bSearched;
         public bool HasCard;
-
         public Dictionary<string, DoorWay> Doors;
-
         public CardType Card;
-
-        public static void Printf(string s) => new Print(s);
+        public void Printf(string s) => new Print(s);
     }
 }
