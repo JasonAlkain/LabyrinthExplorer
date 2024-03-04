@@ -4,11 +4,16 @@ using Enums;
 using LabyrinthExplorer;
 using GameplayNamespace;
 using LabyrinthExplorer.Data;
+using System.Diagnostics;
 
 namespace Handlers
 {
     public class SelectionHandler : Gameplay
     {
+
+        public string userInput = string.Empty;
+
+        [Obsolete("Use NewGame funtion from the Gameplay class instead.")]
         public new void NewGame()
         {
             Printf("\n----------------------------------------------------\n");
@@ -33,61 +38,73 @@ namespace Handlers
 
         protected static void InterpretInput(string input)
         {
-
-            switch (input)
+            if (GameplayData.actions.Contains(input))
             {
-                case "Dev":
+                if (input == "Dev")
+                {
                     DevOptions();
-                    break;
-                case "Use":
-                    Printf("Not available yet.\n");
-                    break;
-                case "Look":
-                    Printf("\n");
-                    PrintDoors();
-                    break;
-                case "Search":
-                    Search.Room();
-                    break;
-                case "Take":
-                    Take.DrawCard(GameplayData._RoomCard);
-                    break;
-                case "I":
-                case "Inventory":
-                    Player.ShowInvetory();
-                    break;
-                case "N":
-                case "North":
-                    input = "North";
-                    CheckDoor(input);
-                    break;
-                case "E":
-                case "East":
-                    input = "East";
-                    CheckDoor(input);
-                    break;
-                case "W":
-                case "West":
-                    input = "West";
-                    CheckDoor(input);
-                    break;
-                case "S":
-                case "South":
-                    input = "South";
-                    CheckDoor(input);
-                    break;
-                case "Q":
-                case "L":
-                case "Quit":
-                case "Leave":
-                    LeaveGame();
-                    break;
-                default:
-                    Printf("\nThat command is not recognized.");
-                    Console.ReadKey();
-                    Printf("\n\n");
-                    break;
+                    return;
+                }
+
+                switch (input)
+                {
+                    case "N":
+                    case "North":
+                        input = "North";
+                        CheckDoor(input);
+                        break;
+                    case "E":
+                    case "East":
+                        input = "East";
+                        CheckDoor(input);
+                        break;
+                    case "W":
+                    case "West":
+                        input = "West";
+                        CheckDoor(input);
+                        break;
+                    case "S":
+                    case "South":
+                        input = "South";
+                        CheckDoor(input);
+                        break;
+                    case "Use":
+                        Printf("Not available yet.\n");
+                        break;
+                    case "Look":
+                        Printf("\n");
+                        PrintDoors();
+                        break;
+                    case "Search":
+                        Search.Room();
+                        break;
+                    case "Take":
+                        Take.DrawCard(GameplayData._RoomCard);
+                        break;
+                    case "I":
+                    case "Inventory":
+                        Player.ShowInvetory();
+                        break;
+                    case "Q":
+                    case "L":
+                    case "Quit":
+                    case "Leave":
+                        LeaveGame();
+                        break;
+                    default:
+                        Printf("\nThat command is not recognized.");
+                        Console.ReadKey();
+                        Printf("\n\n");
+                        break;
+                }
             }
+            else
+            {
+                Printf("\nThat command is not recognized.");
+                Console.ReadKey();
+                Printf("\n\n");
+            }
+
 
         }
 
