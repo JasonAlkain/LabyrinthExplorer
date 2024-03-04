@@ -7,43 +7,28 @@ using Utilities;
 
 namespace Handlers
 {
-    public class Take : GameplayData
+    public class Take
     {
+        public static void Printf(string s) => new Print(s);
         public static void DrawCard(CardType cardType)
         {
-            if (actions.Contains("Take"))
+            if (GameplayData.actions.Contains("Take"))
             {
                 // Remove the take action for the list of actions
-                actions.Remove("Take");
-
-                //Player.Cards.Add(cardType);
-                int count = 0;
-                Card newCard;
-                int omenCount = BaseCardList.OmenCards.Count - 1;
-                int itemCount = BaseCardList.ItemCards.Count - 1;
-                Random rnd = new Random();
-
+                GameplayData.actions.Remove("Take");
+                //
                 switch (cardType)
                 {
                     case CardType.Omen:
-                        var rndOmen = rnd.Next(0, omenCount);
-                        newCard = BaseCardList.OmenCards[rndOmen];
-                        Player.Inventory.Add(newCard);
-                        _Room.HasCard = false;
-                        Utils.Print($"You pick up a card with the word {cardType} written on it.");
+                        Player.Inventory.Add(NewOmenCard());
                         break;
 
                     case CardType.Item:
-                        count = BaseCardList.ItemCards.Count-1;
-                        var rndItem = new Random().Next(0, itemCount);
-                        newCard = BaseCardList.ItemCards[rndItem];
-                        Player.Inventory.Add(newCard);
-                        _Room.HasCard = false;
-                        Utils.Print($"You pick up an {cardType}.");
+                        Player.Inventory.Add(NewItemCard());
                         break;
 
                     default:
-                        Utils.Print("There is nothing to take in this room.");
+                        Printf("There is nothing to take in this room.");
                         break;
 
                 }
@@ -51,10 +36,29 @@ namespace Handlers
             }
             else
             {
-                Utils.Print($"There is nothing to take.");
+                Printf($"There is nothing to take.");
             }
 
         }
 
+        private static Card NewOmenCard()
+        {
+            var rndOmenIndex = new Random().Next(0, BaseCardList.OmenCards.Count - 1);
+            Card omenCard = BaseCardList.OmenCards[rndOmenIndex];
+            Player.Inventory.Add(omenCard);
+            GameplayData._Room.HasCard = false;
+            Printf($"You pick up a card with the word Omen written on it. [{omenCard.Name}]");
+            return omenCard;
+        }
+
+        private static Card NewItemCard()
+        {
+            var rndItemIndex = new Random().Next(0, BaseCardList.ItemCards.Count - 1);
+            Card itemCard = BaseCardList.ItemCards[rndItemIndex];
+            Player.Inventory.Add(itemCard);
+            GameplayData._Room.HasCard = false;
+            Printf($"You pick up an Item. [{itemCard.Name}]");
+            return itemCard;
+        }
     }
 }
