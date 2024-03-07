@@ -20,7 +20,7 @@ namespace LabyrinthExplorer
         }
 
         //public static List<CardType> Cards;
-        public static List<Card> Inventory = new();
+        public static List<Item> Inventory = new();
 
         public Player()
         {
