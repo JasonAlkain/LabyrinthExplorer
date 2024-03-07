@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using Enums;
 using LabyrinthExplorer.Data;
-using RoomNamespace;
 using Utilities;
+using RoomNamespace;
 
 namespace GameplayNamespace
 {

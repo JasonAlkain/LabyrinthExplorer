@@ -2,12 +2,8 @@
 
 namespace LabyrinthExplorer.Data
 {
-    public class Card
+    public class Card : Item
     {
-        public int ID;
-        public string Name;
-        public string Description;
         public CardType _CardType;
-
     }
 }

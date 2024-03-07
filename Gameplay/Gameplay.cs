@@ -5,9 +5,9 @@ using System.Threading;
 using LabyrinthExplorer;
 using Enums;
 using LabyrinthExplorer.Data;
-using Utilities;
 using System.Numerics;
 using RoomNamespace;
+using Utilities;
 
 namespace GameplayNamespace
 {

@@ -9,14 +9,25 @@ using static System.Formats.Asn1.AsnWriter;
 namespace LabyrinthExplorer
 {
     public class Player : PlayerData
-    {      
-        
+    {
+        public static string Name { get; set; }
+        internal static Notifier<int> _Sanity = new Notifier<int>();
+
+        public static int Sanity
+        {
+            get { return _Sanity.Prop; }
+            set { _Sanity.Prop = value; }
+        }
+
+        //public static List<CardType> Cards;
+        public static List<Card> Inventory = new();
+
         public Player()
         {
             Name = string.Empty;
             Sanity = 10;
             
-            Inventory = new List<Card>();
+            Inventory = [];
             _Sanity.PropertyChanged += Score_PropertyChanged;
         }
 
@@ -27,10 +38,8 @@ namespace LabyrinthExplorer
             new Print($"Sanity changed to: {Sanity}");
         }
 
-        public static void ShowInvetory()
-        {
+        public static void ShowInvetory() => 
             Inventory.ForEach(item => new Print($"[ {item.Name} ] "));
-        }
 
         public override string ToString()
         {
@@ -44,18 +53,5 @@ namespace LabyrinthExplorer
 
     public class PlayerData
     {
-        public static string Name { get; set; }
-        internal static Notifier<int> _Sanity = new Notifier<int>();
-
-        public static int Sanity
-        {
-            get { return _Sanity.Prop; }
-            set { _Sanity.Prop = value; }
-        }
-
-        //public static List<CardType> Cards;
-        public static List<Card> Inventory = new List<Card>();
-
-
     }
 }
