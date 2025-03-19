@@ -2,15 +2,18 @@
 using System.Collections.Generic;
 using Enums;
 using GameplayNamespace;
-using Utilities;
+using LabyrinthExplorer.Utilities;
+using LabyrinthExplorer;
 
-namespace RoomNamespace
+namespace LabyrinthExplorer
 {
     public class Room : RoomBase
     {
+        static Dictionary<string, DoorWayType> mDoor { get; set; }
         /// <summary>
         /// Creates a new room from scratch.
         /// </summary>
+        [Obsolete("Use GenerateRoom instead")]
         public void CreateRoom()
         {
             if(RoomID < uint.MaxValue-1)
@@ -18,7 +21,7 @@ namespace RoomNamespace
 
             bSearched = false;
 
-            Doors = new Dictionary<string, DoorWay>
+            Doors = new Dictionary<string, DoorWayType>
             {
                 { "North", GenerateDoorType() },
                 { "East", GenerateDoorType() },
@@ -27,25 +30,74 @@ namespace RoomNamespace
             };
 
             // Check if there is at least one open door
-            if (!Doors.ContainsValue(DoorWay.Open))
-                Doors["North"] = DoorWay.Open; // if not make it the forward door
+            if (!Doors.ContainsValue(DoorWayType.Open))
+                Doors["North"] = DoorWayType.Open; // if not make it the forward door
 
             Header = SetRoomHeader();
             Description = SetRoomDesc();
 
             // Print the info to the console
-            string s = string.Empty;
-            s += ("\n----------------------------------------------------\n");
-            s += ($"~~~~~~  {Header}  ~~~~~~");
-            s += ("\n----------------------------------------------------\n");
-            s += (Description);
-            s += ("----------------------------------------------------\n");
-            new Print(s);
+            string s = "\n----------------------------------------------------\n";
+            s += $"~~~~~~  {Header}  ~~~~~~";
+            s += "\n----------------------------------------------------\n";
+            s += Description;
+            s += "----------------------------------------------------\n";
+            GameConsole.Printf(s);
 
             Card = RoomID > 0 ? GenerateCardType() : CardType.None;
 
             //Have an Event happen when the room has an event card type
         }
+        // Improved method for Room.cs
+        public void GenerateRoom()
+        {
+            if (RoomID < uint.MaxValue - 1)
+                RoomID++;
+
+            bSearched = false;
+
+            // Initialize all doors as None
+            Doors = new Dictionary<string, DoorWayType>
+            {
+                { "North", DoorWayType.None },
+                { "East", DoorWayType.None },
+                { "West", DoorWayType.None },
+                { "South", DoorWayType.None }
+            };
+
+            // Generate a random number of doors (1-3)
+            int doorCount = new Random().Next(1, 4);
+            List<string> directions = ["North", "East", "West", "South"];
+
+            // Ensure at least one door is open
+            string randomDirection = directions[new Random().Next(directions.Count)];
+            Doors[randomDirection] = DoorWayType.Open;
+            directions.Remove(randomDirection);
+            doorCount--;
+
+            // Add additional doors randomly
+            while (doorCount > 0 && directions.Count > 0)
+            {
+                randomDirection = directions[new Random().Next(directions.Count)];
+                Doors[randomDirection] = (DoorWayType)new Random().Next(0, 3); // Exclude None (-1)
+                directions.Remove(randomDirection);
+                doorCount--;
+            }
+
+            Header = SetRoomHeader();
+            Description = SetRoomDesc();
+
+            // Print room information to console
+            string roomInfo = $"\n----------------------------------------------------\n";
+            roomInfo += $"~~~~~~  {Header}  ~~~~~~\n";
+            roomInfo += "----------------------------------------------------\n";
+            roomInfo += $"{Description}";
+            roomInfo += "----------------------------------------------------\n";
+            GameConsole.Printf(roomInfo);
+
+            Card = RoomID > 0 ? GenerateCardType() : CardType.None;
+        }
+
 
         string SetRoomHeader()
         {
@@ -85,16 +137,16 @@ namespace RoomNamespace
         /// Returns a random DoorType
         /// </summary>
         /// <returns>Random DoorType</returns>
-        public DoorWay GenerateDoorType()
+        public static DoorWayType GenerateDoorType()
         {
-            return (DoorWay)new Random().Next(-1, 3);
+            return (DoorWayType)new Random().Next(-1, 3);
         }
 
         /// <summary>
         /// Returns a random CardType.
         /// </summary>
         /// <returns>Random CardType</returns>
-        public CardType GenerateCardType()
+        public static CardType GenerateCardType()
         {
             return (CardType)new Random().Next(0, 4);
         }
@@ -104,23 +156,24 @@ namespace RoomNamespace
         /// 
         /// </summary>
         /// <param name="doorName"></param>
-        public static void CheckDoor(string doorName)
+        [Obsolete("Please check else where?")]
+        public static void CheckDoor(string doorName, Dictionary<string, DoorWayType> doors)
         {
-            switch (Doors[doorName])
+            switch (doors[doorName])
             {
-                case DoorWay.Open:
-                    Printf("\nYou try the door and with some luck it opens.\n\n");
+                case DoorWayType.Open:
+                    GameConsole.Printf("\nYou try the door and with some luck it opens.\n\n");
                     GameLoop.ExploreNewRoom();
                     break;
-                case DoorWay.Blocked:
-                    Printf("The door is blocked board and won't budge.\n");
+                case DoorWayType.Blocked:
+                    GameConsole.Printf("The door is blocked board and won't budge.\n");
                     break;
-                case DoorWay.Locked:
-                    Printf("You try the door but to no avail.\n" +
+                case DoorWayType.Locked:
+                    GameConsole.Printf("You try the door but to no avail.\n" +
                           "It is locked and won't open.\n");
                     break;
-                case DoorWay.None:
-                    Printf("You examine the frame and see it looks\n" +
+                case DoorWayType.None:
+                    GameConsole.Printf("You examine the frame and see it looks\n" +
                           " more like it is built into the wall.\n");
                     break;
             }

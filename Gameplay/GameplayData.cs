@@ -3,40 +3,40 @@ using System.Collections.Generic;
 using Enums;
 using LabyrinthExplorer.Data;
 using Utilities;
-using RoomNamespace;
+using System.Threading;
 
-namespace GameplayNamespace
+namespace LabyrinthExplorer.Gameplay
 {
     public class GameplayData
     {
-        public static Room _Room;
-        [Obsolete]
-        public static int roomCount;
-        [Obsolete]
-        public static CardType _RoomCard;
-        public static List<string> actions;
-        public static List<Card> CardList;
+        public static Room RoomRef { get; set; }
+        [Obsolete("Currently being refactored")]
+        public static int RoomCount { get; set; }
+        [Obsolete("Currently being refactored")]
+        public static CardType RoomCard { get; set; }
+        public static List<string> UserActions { get; set; }
+        public static List<Card> CardList { get; set; }
 
-        
-        public static Notifier<string> _Input;
 
+        public static Notifier<string> UserInput { get; set; }
+        [Obsolete("Use UserInput instead")]
         public static string Input
         {
-            get { return _Input.Prop; }
-            set { _Input.Prop = value; }
+            get { return UserInput.Prop; }
+            set { UserInput.Prop = value; }
         }
 
 
 
         public GameplayData()
         {
-            _Room = new Room();
-            Input = string.Empty;
-            actions = new List<string>();
-            CardList = new List<Card>();
+            RoomRef = new Room();
+            UserInput = new Notifier<string>();
+            UserActions = [];
+            CardList = [];
         }
 
 
-        public static void Printf(string s) => new Print(s);
+        //public static void Printf(string s) => new Print(s);
     }
 }

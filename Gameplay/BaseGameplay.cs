@@ -2,28 +2,32 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
-using LabyrinthExplorer;
 using Enums;
 using LabyrinthExplorer.Data;
-using System.Numerics;
-using RoomNamespace;
+using LabyrinthExplorer.Utilities;
 using Utilities;
+using GameplayNamespace;
 
-namespace GameplayNamespace
+namespace LabyrinthExplorer.Gameplay
 {
-    public class Gameplay
+    public class BaseGameplay
     {
         // ====================================================================================================
         // Functions
         // ====================================================================================================
-        public static void Printf(string s) => new Print(s);
+        public static void Printf(string s) => GameConsole.Printf(s);
+        
+        
+
         /// <summary>
         /// 
         /// </summary>
-        public void Setup()
+        public static void Setup()
         {
-            new Player();
+            //new Player();
             int nameIndex = new Random().Next(0, Names.ListOfNames.Count - 1);
+            new Player();
+
             Player.Name = Names.ListOfNames[nameIndex];
             new GameplayData();
         }
@@ -78,31 +82,31 @@ namespace GameplayNamespace
                 "(I)nventory"
             };
             
-            if(GameplayData._Room.bSearched == false)
+            if(GameplayData.RoomRef.bSearched == false)
                 actions.Add("Search");
 
-            if(GameplayData._Room.HasCard)
+            if(GameplayData.RoomRef.HasCard)
                 actions.Add("Take");
 
-            GameplayData.actions = actions;
+            GameplayData.UserActions = actions;
         }
 
         public static void CheckDoor(string doorName)
         {
-            switch (GameplayData._Room.Doors[doorName])
+            switch (GameplayData.RoomRef.Doors[doorName])
             {
-                case DoorWay.Open:
+                case DoorWayType.Open:
                     Printf("\nYou try the door and with some luck it opens.\n\n");
                     GameLoop.ExploreNewRoom();
                     break;
-                case DoorWay.Blocked:
+                case DoorWayType.Blocked:
                     Printf("The door is blocked board and won't budge.\n");
                     break;
-                case DoorWay.Locked:
+                case DoorWayType.Locked:
                     Printf("You try the door but to no avail.\n" +
                           "It is locked and won't open.\n");
                     break;
-                case DoorWay.None:
+                case DoorWayType.None:
                     Printf("You examine the frame and see it looks\n" +
                           " more like it is built into the wall.\n");
                     break;
@@ -114,24 +118,24 @@ namespace GameplayNamespace
         {
 
             // Print what the doors look like
-            foreach (var door in GameplayData._Room.Doors)
+            foreach (var door in GameplayData.RoomRef.Doors)
             {
                 string doorAvail = "";
                 switch (door.Value)
                 {
-                    case DoorWay.None:
+                    case DoorWayType.None:
                         doorAvail += "-] There is a frame but no door.\n";
                         doorAvail += "-] Like a random frame was put on the wall.\n";
                         break;
-                    case DoorWay.Blocked:
+                    case DoorWayType.Blocked:
                         doorAvail += "-] The door has a board nailed to the frame.\n";
                         doorAvail += "-] Covering the door and preventing it from moving.\n";
                         break;
-                    case DoorWay.Open:
+                    case DoorWayType.Open:
                         doorAvail += "-] This door has a normal looking handle.\n";
                         doorAvail += "-] Maybe it will lead somewhere.\n";
                         break;
-                    case DoorWay.Locked:
+                    case DoorWayType.Locked:
                         doorAvail += "-] This door has a normal looking handle.\n";
                         doorAvail += "-] Maybe it will lead somewhere.\n";
                         break;
@@ -147,9 +151,9 @@ namespace GameplayNamespace
 
         public static string ReadInput()
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
 
-            foreach (string action in GameplayData.actions)
+            foreach (string action in GameplayData.UserActions)
             {
                 sb.Append($"[{action}]");
             }
@@ -157,11 +161,13 @@ namespace GameplayNamespace
             Printf($"\n[Actions ~|{sb}|~ ]");
 
             Printf("\n#>| ");
-            GameplayData.Input = Console.ReadLine() ?? "";
+            //GameplayData.Input = Console.ReadLine() ?? "";
+            var userIn = Console.ReadLine() ?? "";
+            GameplayData.UserInput.Prop = userIn;
 
             Thread.Sleep(500);
 
-            return Utils.Capitalize(GameplayData.Input.ToLower());
+            return Utils.Capitalize(GameplayData.UserInput.Prop.ToLower());
         }
     }
 }

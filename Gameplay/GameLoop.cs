@@ -1,7 +1,8 @@
 ﻿using System.Threading;
 using Enums;
-using Handlers;
-using RoomNamespace;
+using LabyrinthExplorer.Gameplay;
+using LabyrinthExplorer.Handlers;
+using LabyrinthExplorer;
 
 namespace GameplayNamespace
 {
@@ -12,16 +13,16 @@ namespace GameplayNamespace
         {
             // Pause for effect
             Thread.Sleep(1000);
-            GameplayData._Room = new Room();
+            GameplayData.RoomRef = new Room();
 
             // Increment _Room count
             //GameplayData.roomCount++;
 
             // Set up the Actions first available in the _Room
-            Gameplay.BaseActions();
+            BaseGameplay.BaseActions();
 
             // Create a new _Room for the player to explore
-            GameplayData._Room.CreateRoom();
+            GameplayData.RoomRef.GenerateRoom();
 
             // Once created set the current _Room card to an instance for later
             //GameplayData._RoomCard = GameplayData._Room.Card;

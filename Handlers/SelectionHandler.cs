@@ -5,10 +5,12 @@ using LabyrinthExplorer;
 using GameplayNamespace;
 using LabyrinthExplorer.Data;
 using System.Diagnostics;
+using LabyrinthExplorer.Gameplay;
+using Handlers;
 
-namespace Handlers
+namespace LabyrinthExplorer.Handlers
 {
-    public class SelectionHandler : Gameplay
+    public class SelectionHandler : BaseGameplay
     {
 
         public string userInput = string.Empty;
@@ -38,7 +40,7 @@ namespace Handlers
 
         protected static void InterpretInput(string input)
         {
-            if (GameplayData.actions.Contains(input))
+            if (GameplayData.UserActions.Contains(input))
             {
                 if (input == "Dev")
                 {
@@ -79,7 +81,7 @@ namespace Handlers
                         Search.Room();
                         break;
                     case "Take":
-                        Take.DrawCard(GameplayData._RoomCard);
+                        Take.DrawCard(GameplayData.RoomCard);
                         break;
                     case "I":
                     case "Inventory":
@@ -110,11 +112,11 @@ namespace Handlers
 
         protected static void DevOptions()
         {
-            GameplayData.actions = ["Item", "Omen", "Leave"];
-            Random rnd = new Random();
+            GameplayData.UserActions = ["Item", "Omen", "Leave"];
+            Random rnd = new();
             while (true)
             {
-                int index = 0;
+                int index;
                 Printf("What would you like to do?");
                 string input = ReadInput();
 
@@ -150,7 +152,7 @@ namespace Handlers
             Printf("Are you sure you want to leave the game?");
             Printf("You will have to start from square one if you do.");
 
-            GameplayData.actions = new List<string>() { "Yes", "No" };
+            GameplayData.UserActions = ["Yes", "No"];
 
             switch (ReadInput())
             {

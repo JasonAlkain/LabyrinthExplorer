@@ -1,9 +1,9 @@
 ﻿using System;
 using LabyrinthExplorer;
 using Enums;
-using GameplayNamespace;
 using LabyrinthExplorer.Data;
 using Utilities;
+using LabyrinthExplorer.Gameplay;
 
 namespace Handlers
 {
@@ -12,10 +12,10 @@ namespace Handlers
         public static void Printf(string s) => new Print(s);
         public static void DrawCard(CardType cardType)
         {
-            if (GameplayData.actions.Contains("Take"))
+            if (GameplayData.UserActions.Contains("Take"))
             {
                 // Remove the take action for the list of actions
-                GameplayData.actions.Remove("Take");
+                GameplayData.UserActions.Remove("Take");
                 //
                 switch (cardType)
                 {
@@ -46,7 +46,7 @@ namespace Handlers
             var rndOmenIndex = new Random().Next(0, BaseCardList.OmenCards.Count - 1);
             Card omenCard = BaseCardList.OmenCards[rndOmenIndex];
             Player.Inventory.Add(omenCard);
-            GameplayData._Room.HasCard = false;
+            GameplayData.RoomRef.HasCard = false;
             Printf($"You pick up a card with the word Omen written on it. [{omenCard.Name}]");
             return omenCard;
         }
@@ -56,7 +56,7 @@ namespace Handlers
             var rndItemIndex = new Random().Next(0, BaseCardList.ItemCards.Count - 1);
             Card itemCard = BaseCardList.ItemCards[rndItemIndex];
             Player.Inventory.Add(itemCard);
-            GameplayData._Room.HasCard = false;
+            GameplayData.RoomRef.HasCard = false;
             Printf($"You pick up an Item. [{itemCard.Name}]");
             return itemCard;
         }

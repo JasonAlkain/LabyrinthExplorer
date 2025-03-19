@@ -2,7 +2,7 @@
 using Enums;
 using Utilities;
 
-namespace RoomNamespace
+namespace LabyrinthExplorer
 {
     public class RoomBase
     {
@@ -11,8 +11,8 @@ namespace RoomNamespace
         public string Description;
         public bool bSearched;
         public bool HasCard;
-        public Dictionary<string, DoorWay> Doors;
+        public Dictionary<string, DoorWayType> Doors;
         public CardType Card;
-        public void Printf(string s) => new Print(s);
+        //public static void Printf(string s) => new Print(s);
     }
 }

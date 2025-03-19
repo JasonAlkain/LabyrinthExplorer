@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using System.Threading;
-using GameplayNamespace;
+using LabyrinthExplorer.Gameplay;
 using Utilities;
 
 namespace Handlers
@@ -15,9 +15,9 @@ namespace Handlers
         {
             string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
-            GameplayData.actions = new List<string>() { "New Game", "Load", "Quit"};
+            GameplayData.UserActions = new List<string>() { "New Game", "Load", "Quit"};
             StringBuilder sb = new StringBuilder();
-            GameplayData.actions.ForEach(action => sb.Append($"\n [{action}]"));
+            GameplayData.UserActions.ForEach(action => sb.Append($"\n [{action}]"));
 
             Printf("\n\n");
             Printf($"\n[  Version: {version}  ]\n");
@@ -39,7 +39,7 @@ namespace Handlers
                 case "new":
                 case "new game":
                     Console.Clear();
-                    Gameplay.NewGame();
+                    BaseGameplay.NewGame();
                     break;
                 case "l":
                 case "load":
@@ -55,7 +55,7 @@ namespace Handlers
                 case "q":
                 case "exit":
                 case "quit":
-                    Gameplay.Quit();
+                    BaseGameplay.Quit();
                     break;
                 default:
                     Console.Clear();

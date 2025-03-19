@@ -1,6 +1,6 @@
 ﻿namespace Enums
 {
-    public enum DoorWay
+    public enum DoorWayType
     {
         None = -1,
         Blocked = 0,
