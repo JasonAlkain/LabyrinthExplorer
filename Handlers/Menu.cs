@@ -1,23 +1,34 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
-using System.Threading;
 using LabyrinthExplorer.Gameplay;
-using Utilities;
+using LabyrinthExplorer.Utilities;
 
 namespace Handlers
 {
     public class Menu
     {
-        public static void Printf(string s) => new Print(s);
-        public static void _Main()
+        private readonly GameSession _session;
+        private readonly BaseGameplay _gameplay;
+        private readonly GameLoop _gameLoop;
+        private readonly SelectionHandler _selectionHandler;
+
+        public Menu(GameSession session, BaseGameplay gameplay, GameLoop gameLoop, SelectionHandler selectionHandler)
+        {
+            _session = session;
+            _gameplay = gameplay;
+            _gameLoop = gameLoop;
+            _selectionHandler = selectionHandler;
+        }
+
+        public void Run()
         {
             string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
-            GameplayData.UserActions = new List<string>() { "New Game", "Load", "Quit"};
+            _session.GameplayData.UserActions = new List<string>() { "New Game", "Load", "Quit" };
             StringBuilder sb = new StringBuilder();
-            GameplayData.UserActions.ForEach(action => sb.Append($"\n [{action}]"));
+            _session.GameplayData.UserActions.ForEach(action => sb.Append($"\n [{action}]"));
 
             Printf("\n\n");
             Printf($"\n[  Version: {version}  ]\n");
@@ -30,41 +41,41 @@ namespace Handlers
             Printf($"{sb.ToString()}\n");
             Printf("\n#>| ");
 
-            GameplayData.Input = Console.ReadLine() ?? " ";
-            GameplayData.Input = GameplayData.Input.ToLower();
+            _session.GameplayData.Input = _session.Console.ReadLine();
+            _session.GameplayData.Input = _session.GameplayData.Input.ToLower();
 
-            switch (GameplayData.Input)
+            switch (_session.GameplayData.Input)
             {
                 case "n":
                 case "new":
                 case "new game":
-                    Console.Clear();
-                    BaseGameplay.NewGame();
+                    _session.Console.Clear();
+                    _gameplay.NewGame();
                     break;
                 case "l":
                 case "load":
                 case "load game":
                     Printf("\n\nThis option is not ready yet.");
                     Printf("\n#>| ");
-                    Console.ReadKey();
-                    Console.Clear();
-                    Thread.Sleep(500);
-                    _Main();
+                    _session.Console.ReadKey(true);
+                    _session.Console.Clear();
+                    _session.Console.Sleep(500);
+                    Run();
                     break;
                 case "e":
                 case "q":
                 case "exit":
                 case "quit":
-                    BaseGameplay.Quit();
+                    _gameplay.Quit();
                     break;
                 default:
-                    Console.Clear();
-                    _Main();
+                    _session.Console.Clear();
+                    Run();
                     break;
 
             }
         }
 
-
+        private void Printf(string s) => _session.Console.Write(s);
     }
 }

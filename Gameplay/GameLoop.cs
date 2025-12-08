@@ -1,37 +1,38 @@
-﻿using System.Threading;
 using Enums;
 using LabyrinthExplorer.Gameplay;
 using LabyrinthExplorer.Handlers;
-using LabyrinthExplorer;
 
 namespace GameplayNamespace
 {
     public class GameLoop
     {
+        private readonly GameSession _session;
+        private readonly BaseGameplay _baseGameplay;
+        private SelectionHandler? _selectionHandler;
 
-        public static void ExploreNewRoom()
+        public GameLoop(GameSession session, BaseGameplay baseGameplay)
         {
-            // Pause for effect
-            Thread.Sleep(1000);
-            GameplayData.RoomRef = new Room();
+            _session = session;
+            _baseGameplay = baseGameplay;
+        }
 
-            // Increment _Room count
-            //GameplayData.roomCount++;
+        public void RegisterSelectionHandler(SelectionHandler selectionHandler)
+        {
+            _selectionHandler = selectionHandler;
+        }
 
-            // Set up the Actions first available in the _Room
-            BaseGameplay.BaseActions();
+        public void ExploreNewRoom()
+        {
+            _session.Console.Sleep(1000);
+            _session.GameplayData.RoomRef = new Room();
 
-            // Create a new _Room for the player to explore
-            GameplayData.RoomRef.GenerateRoom();
+            _baseGameplay.BaseActions();
 
-            // Once created set the current _Room card to an instance for later
-            //GameplayData._RoomCard = GameplayData._Room.Card;
+            _session.GameplayData.RoomRef.GenerateRoom(_session.Random, _session.Console);
 
-            Thread.Sleep(1250);
-            //PrintDoors();
+            _session.Console.Sleep(1250);
 
-            // Start the actions phase from the Selection Handler
-            SelectionHandler.Actions();
+            _selectionHandler?.Actions();
         }
     }
 }

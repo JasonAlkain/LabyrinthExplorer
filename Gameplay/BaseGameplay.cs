@@ -1,55 +1,54 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading;
 using Enums;
 using LabyrinthExplorer.Data;
 using LabyrinthExplorer.Utilities;
 using Utilities;
-using GameplayNamespace;
 
 namespace LabyrinthExplorer.Gameplay
 {
     public class BaseGameplay
     {
-        // ====================================================================================================
-        // Functions
-        // ====================================================================================================
-        public static void Printf(string s) => GameConsole.Printf(s);
-        
-        
+        private readonly GameSession _session;
+        private readonly IConsoleService _console;
+        private GameLoop? _gameLoop;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public static void Setup()
+        public BaseGameplay(GameSession session)
         {
-            //new Player();
-            int nameIndex = new Random().Next(0, Names.ListOfNames.Count - 1);
-            new Player();
-
-            Player.Name = Names.ListOfNames[nameIndex];
-            new GameplayData();
+            _session = session;
+            _console = session.Console;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public static void Quit()
+        public void RegisterGameLoop(GameLoop gameLoop)
         {
-            Console.Clear();
+            _gameLoop = gameLoop;
+        }
+
+        public void Setup()
+        {
+            int nameIndex = _session.Random.Next(0, Names.ListOfNames.Count - 1);
+            _session.Player.Name = Names.ListOfNames[nameIndex];
+        }
+
+        public void Quit()
+        {
+            _console.Clear();
             Printf("\n\n\n\n");
             Printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
             Printf("~~~~~ Thank you for playing! ~~~~~\n");
             Printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n");
-            Thread.Sleep(1500);
+            _console.Sleep(1500);
             Environment.Exit(0);
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        public static void NewGame()
+
+        public void NewGame()
         {
+            if (_gameLoop == null)
+            {
+                throw new InvalidOperationException("Game loop must be registered before starting a new game.");
+            }
+
             Printf("\n----------------------------------------------------\n");
             Printf("~~~~~~  Welcome to the Labyrinth  ~~~~~~");
             Printf("\n----------------------------------------------------\n\n");
@@ -59,18 +58,17 @@ namespace LabyrinthExplorer.Gameplay
             Printf("Good luck adventurer! We hope you can find the way out.\n");
             Printf("\n----------------------------------------------------\n");
 
-            Thread.Sleep(3250);
+            _console.Sleep(3250);
 
             var bag = new Card() { Name = "Bag", Description = "Somthing to hold things." };
 
-            Player.Inventory.Add(bag);
+            _session.Player.Inventory.Add(bag);
 
-            GameLoop.ExploreNewRoom();
+            _gameLoop.ExploreNewRoom();
         }
 
-        public static void BaseActions()
+        public void BaseActions()
         {
-            // Set up basic Actions for each new _Room
             var actions = new List<string>
             {
                 "(L)eave/(Q)uit",
@@ -81,23 +79,23 @@ namespace LabyrinthExplorer.Gameplay
                 "(S)outh",
                 "(I)nventory"
             };
-            
-            if(GameplayData.RoomRef.bSearched == false)
+
+            if (_session.GameplayData.RoomRef.bSearched == false)
                 actions.Add("Search");
 
-            if(GameplayData.RoomRef.HasCard)
+            if (_session.GameplayData.RoomRef.HasCard)
                 actions.Add("Take");
 
-            GameplayData.UserActions = actions;
+            _session.GameplayData.UserActions = actions;
         }
 
-        public static void CheckDoor(string doorName)
+        public void CheckDoor(string doorName)
         {
-            switch (GameplayData.RoomRef.Doors[doorName])
+            switch (_session.GameplayData.RoomRef.Doors[doorName])
             {
                 case DoorWayType.Open:
                     Printf("\nYou try the door and with some luck it opens.\n\n");
-                    GameLoop.ExploreNewRoom();
+                    _gameLoop?.ExploreNewRoom();
                     break;
                 case DoorWayType.Blocked:
                     Printf("The door is blocked board and won't budge.\n");
@@ -114,11 +112,10 @@ namespace LabyrinthExplorer.Gameplay
 
         }
 
-        public static void PrintDoors()
+        public void PrintDoors()
         {
 
-            // Print what the doors look like
-            foreach (var door in GameplayData.RoomRef.Doors)
+            foreach (var door in _session.GameplayData.RoomRef.Doors)
             {
                 string doorAvail = "";
                 switch (door.Value)
@@ -145,15 +142,15 @@ namespace LabyrinthExplorer.Gameplay
 
                 Printf($"The door frame {door.Key}:\n{doorAvail}\n");
 
-                Thread.Sleep(1250);
+                _console.Sleep(1250);
             }
         }
 
-        public static string ReadInput()
+        public string ReadInput()
         {
             StringBuilder sb = new();
 
-            foreach (string action in GameplayData.UserActions)
+            foreach (string action in _session.GameplayData.UserActions)
             {
                 sb.Append($"[{action}]");
             }
@@ -161,13 +158,14 @@ namespace LabyrinthExplorer.Gameplay
             Printf($"\n[Actions ~|{sb}|~ ]");
 
             Printf("\n#>| ");
-            //GameplayData.Input = Console.ReadLine() ?? "";
-            var userIn = Console.ReadLine() ?? "";
-            GameplayData.UserInput.Prop = userIn;
+            var userIn = _console.ReadLine() ?? string.Empty;
+            _session.GameplayData.UserInput.Prop = userIn;
 
-            Thread.Sleep(500);
+            _console.Sleep(500);
 
-            return Utils.Capitalize(GameplayData.UserInput.Prop.ToLower());
+            return Utils.Capitalize(_session.GameplayData.UserInput.Prop.ToLower());
         }
+
+        public void Printf(string s) => _console.Write(s);
     }
 }
