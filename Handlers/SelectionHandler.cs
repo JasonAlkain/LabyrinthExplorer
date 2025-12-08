@@ -1,46 +1,47 @@
 using System;
-using System.Collections.Generic;
 using Enums;
 using LabyrinthExplorer;
 using GameplayNamespace;
 using LabyrinthExplorer.Data;
-using System.Diagnostics;
 using LabyrinthExplorer.Gameplay;
-using Handlers;
 
 namespace LabyrinthExplorer.Handlers
 {
-    public class SelectionHandler : BaseGameplay
+    public class SelectionHandler
     {
+        private readonly GameSession _session;
+        private readonly BaseGameplay _baseGameplay;
+        private readonly GameLoop _gameLoop;
+        private readonly Search _search;
+        private readonly Take _take;
+        private Action? _returnToMenu;
 
-        public string userInput = string.Empty;
-
-        [Obsolete("Use NewGame funtion from the Gameplay class instead.")]
-        public new void NewGame()
+        public SelectionHandler(GameSession session, BaseGameplay baseGameplay, GameLoop gameLoop)
         {
-            Printf("\n----------------------------------------------------\n");
-            Printf("~~~~~~  Welcome to the Labyrinth  ~~~~~~");
-            Printf("\n----------------------------------------------------\n\n");
-            Printf("No two rooms lead to the same place nor can you\n");
-            Printf("backtrack to where you were.\n");
-            Printf("The Labyrinth is alive and there is only one way out.\n");
-            Printf("Good luck adventurer! We hope you can find the way out.\n");
-            Printf("\n----------------------------------------------------\n");
-            GameLoop.ExploreNewRoom();
+            _session = session;
+            _baseGameplay = baseGameplay;
+            _gameLoop = gameLoop;
+            _search = new Search(session, baseGameplay);
+            _take = new Take(session);
         }
 
-        public static void Actions()
+        public void RegisterMenu(Action returnToMenu)
+        {
+            _returnToMenu = returnToMenu;
+        }
+
+        public void Actions()
         {
             while (true)
             {
-                BaseActions();
-                InterpretInput(ReadInput());
+                _baseGameplay.BaseActions();
+                InterpretInput(_baseGameplay.ReadInput());
             }
         }
 
-        protected static void InterpretInput(string input)
+        protected void InterpretInput(string input)
         {
-            if (GameplayData.UserActions.Contains(input))
+            if (_session.GameplayData.UserActions.Contains(input))
             {
                 if (input == "Dev")
                 {
@@ -53,39 +54,39 @@ namespace LabyrinthExplorer.Handlers
                     case "N":
                     case "North":
                         input = "North";
-                        CheckDoor(input);
+                        _baseGameplay.CheckDoor(input);
                         break;
                     case "E":
                     case "East":
                         input = "East";
-                        CheckDoor(input);
+                        _baseGameplay.CheckDoor(input);
                         break;
                     case "W":
                     case "West":
                         input = "West";
-                        CheckDoor(input);
+                        _baseGameplay.CheckDoor(input);
                         break;
                     case "S":
                     case "South":
                         input = "South";
-                        CheckDoor(input);
+                        _baseGameplay.CheckDoor(input);
                         break;
                     case "Use":
-                        Printf("Not available yet.\n");
+                        _baseGameplay.Printf("Not available yet.\n");
                         break;
                     case "Look":
-                        Printf("\n");
-                        PrintDoors();
+                        _baseGameplay.Printf("\n");
+                        _baseGameplay.PrintDoors();
                         break;
                     case "Search":
-                        Search.Room();
+                        _search.Room();
                         break;
                     case "Take":
-                        Take.DrawCard(GameplayData.RoomCard);
+                        _take.DrawCard(_session.GameplayData.RoomCard);
                         break;
                     case "I":
                     case "Inventory":
-                        Player.ShowInvetory();
+                        _session.Player.ShowInventory();
                         break;
                     case "Q":
                     case "L":
@@ -94,89 +95,82 @@ namespace LabyrinthExplorer.Handlers
                         LeaveGame();
                         break;
                     default:
-                        Printf("\nThat command is not recognized.");
-                        Console.ReadKey();
-                        Printf("\n\n");
+                        _baseGameplay.Printf("\nThat command is not recognized.");
+                        _session.Console.ReadKey(true);
+                        _baseGameplay.Printf("\n\n");
                         break;
                 }
             }
             else
             {
-                Printf("\nThat command is not recognized.");
-                Console.ReadKey();
-                Printf("\n\n");
+                _baseGameplay.Printf("\nThat command is not recognized.");
+                _session.Console.ReadKey(true);
+                _baseGameplay.Printf("\n\n");
             }
 
 
         }
 
-        protected static void DevOptions()
+        protected void DevOptions()
         {
-            GameplayData.UserActions = ["Item", "Omen", "Leave"];
-            Random rnd = new();
+            _session.GameplayData.UserActions = ["Item", "Omen", "Leave"];
             while (true)
             {
                 int index;
-                Printf("What would you like to do?");
-                string input = ReadInput();
+                _baseGameplay.Printf("What would you like to do?");
+                string input = _baseGameplay.ReadInput();
 
                 switch (input)
                 {
                     case "Item":
-                        index = rnd.Next(0, BaseCardList.ItemCards.Count-1);
-                        Player.Inventory.Add(BaseCardList.ItemCards[index]);
-                        Printf("~{Added an item to your inventory}~.\n");
-                        Printf($"~{BaseCardList.ItemCards[index].Name}~.\n");
+                        index = _session.Random.Next(0, BaseCardList.ItemCards.Count - 1);
+                        _session.Player.Inventory.Add(BaseCardList.ItemCards[index]);
+                        _baseGameplay.Printf("~{Added an item to your inventory}~.\n");
+                        _baseGameplay.Printf($"~{BaseCardList.ItemCards[index].Name}~.\n");
                         break;
                     case "Omen":
-                        index = rnd.Next(0, BaseCardList.OmenCards.Count-1);
-                        Player.Inventory.Add(BaseCardList.OmenCards[index]);
-                        Printf("~{Added an Omen card to your inventory}~.\n");
-                        Printf($"~{BaseCardList.OmenCards[index].Name}~.\n");
+                        index = _session.Random.Next(0, BaseCardList.OmenCards.Count - 1);
+                        _session.Player.Inventory.Add(BaseCardList.OmenCards[index]);
+                        _baseGameplay.Printf("~{Added an Omen card to your inventory}~.\n");
+                        _baseGameplay.Printf($"~{BaseCardList.OmenCards[index].Name}~.\n");
                         break;
                     case "Leave":
                         Actions();
                         break;
                     default:
-                        Printf("\nThat command is not recognized.");
-                        Console.ReadKey();
-                        Printf("\n\n");
+                        _baseGameplay.Printf("\nThat command is not recognized.");
+                        _session.Console.ReadKey(true);
+                        _baseGameplay.Printf("\n\n");
                         break;
                 }
             }
 
         }
 
-        public static void LeaveGame()
+        public void LeaveGame()
         {
-            Printf("Are you sure you want to leave the game?");
-            Printf("You will have to start from square one if you do.");
+            _baseGameplay.Printf("Are you sure you want to leave the game?");
+            _baseGameplay.Printf("You will have to start from square one if you do.");
 
-            GameplayData.UserActions = ["Yes", "No"];
+            _session.GameplayData.UserActions = ["Yes", "No"];
 
-            switch (ReadInput())
+            switch (_baseGameplay.ReadInput())
             {
                 case "Yes":
-                    Console.Clear();
-                    Menu._Main();
+                    _session.Console.Clear();
+                    _returnToMenu?.Invoke();
                     break;
                 case "No":
                     Actions();
                     break;
                 default:
-                    Printf("\nThat command is not recognized.");
-                    Console.ReadKey();
-                    Printf("\n\n");
+                    _baseGameplay.Printf("\nThat command is not recognized.");
+                    _session.Console.ReadKey(true);
+                    _baseGameplay.Printf("\n\n");
                     break;
             }
 
 
         }
-    }
-
-    // I don't know why this is here yet.
-    // But I might someday.
-    internal class SelectionHandlerImpl : SelectionHandler
-    {
     }
 }

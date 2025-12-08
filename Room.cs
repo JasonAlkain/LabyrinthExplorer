@@ -1,42 +1,36 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Enums;
 using GameplayNamespace;
 using LabyrinthExplorer.Utilities;
-using LabyrinthExplorer;
 
 namespace LabyrinthExplorer
 {
     public class Room : RoomBase
     {
         static Dictionary<string, DoorWayType> mDoor { get; set; }
-        /// <summary>
-        /// Creates a new room from scratch.
-        /// </summary>
         [Obsolete("Use GenerateRoom instead")]
         public void CreateRoom()
         {
-            if(RoomID < uint.MaxValue-1)
+            if (RoomID < uint.MaxValue - 1)
                 RoomID++;
 
             bSearched = false;
 
             Doors = new Dictionary<string, DoorWayType>
             {
-                { "North", GenerateDoorType() },
-                { "East", GenerateDoorType() },
-                { "West", GenerateDoorType() },
-                { "South", GenerateDoorType() }
+                { "North", GenerateDoorType(new Random()) },
+                { "East", GenerateDoorType(new Random()) },
+                { "West", GenerateDoorType(new Random()) },
+                { "South", GenerateDoorType(new Random()) }
             };
 
-            // Check if there is at least one open door
             if (!Doors.ContainsValue(DoorWayType.Open))
-                Doors["North"] = DoorWayType.Open; // if not make it the forward door
+                Doors["North"] = DoorWayType.Open;
 
             Header = SetRoomHeader();
             Description = SetRoomDesc();
 
-            // Print the info to the console
             string s = "\n----------------------------------------------------\n";
             s += $"~~~~~~  {Header}  ~~~~~~";
             s += "\n----------------------------------------------------\n";
@@ -44,19 +38,16 @@ namespace LabyrinthExplorer
             s += "----------------------------------------------------\n";
             GameConsole.Printf(s);
 
-            Card = RoomID > 0 ? GenerateCardType() : CardType.None;
-
-            //Have an Event happen when the room has an event card type
+            Card = RoomID > 0 ? GenerateCardType(new Random()) : CardType.None;
         }
-        // Improved method for Room.cs
-        public void GenerateRoom()
+
+        public void GenerateRoom(Random random, IConsoleService console)
         {
             if (RoomID < uint.MaxValue - 1)
                 RoomID++;
 
             bSearched = false;
 
-            // Initialize all doors as None
             Doors = new Dictionary<string, DoorWayType>
             {
                 { "North", DoorWayType.None },
@@ -65,21 +56,18 @@ namespace LabyrinthExplorer
                 { "South", DoorWayType.None }
             };
 
-            // Generate a random number of doors (1-3)
-            int doorCount = new Random().Next(1, 4);
-            List<string> directions = ["North", "East", "West", "South"];
+            int doorCount = random.Next(1, 4);
+            List<string> directions = new() { "North", "East", "West", "South" };
 
-            // Ensure at least one door is open
-            string randomDirection = directions[new Random().Next(directions.Count)];
+            string randomDirection = directions[random.Next(directions.Count)];
             Doors[randomDirection] = DoorWayType.Open;
             directions.Remove(randomDirection);
             doorCount--;
 
-            // Add additional doors randomly
             while (doorCount > 0 && directions.Count > 0)
             {
-                randomDirection = directions[new Random().Next(directions.Count)];
-                Doors[randomDirection] = (DoorWayType)new Random().Next(0, 3); // Exclude None (-1)
+                randomDirection = directions[random.Next(directions.Count)];
+                Doors[randomDirection] = (DoorWayType)random.Next(0, 3);
                 directions.Remove(randomDirection);
                 doorCount--;
             }
@@ -87,21 +75,19 @@ namespace LabyrinthExplorer
             Header = SetRoomHeader();
             Description = SetRoomDesc();
 
-            // Print room information to console
             string roomInfo = $"\n----------------------------------------------------\n";
             roomInfo += $"~~~~~~  {Header}  ~~~~~~\n";
             roomInfo += "----------------------------------------------------\n";
             roomInfo += $"{Description}";
             roomInfo += "----------------------------------------------------\n";
-            GameConsole.Printf(roomInfo);
+            console.Write(roomInfo);
 
-            Card = RoomID > 0 ? GenerateCardType() : CardType.None;
+            Card = RoomID > 0 ? GenerateCardType(random) : CardType.None;
         }
 
 
         string SetRoomHeader()
         {
-            // Check if this is the first _Room and set the opening accordingly 
             return RoomID < 2 ? "You have entered the Labyrinth." : "You explore a new room.";
         }
 
@@ -109,7 +95,6 @@ namespace LabyrinthExplorer
         {
             string roomDesc = "";
 
-            // Check if this is the first _Room and set the opening accordingly 
             if (RoomID < 2)
             {
 
@@ -133,29 +118,17 @@ namespace LabyrinthExplorer
             return roomDesc;
         }
 
-        /// <summary>
-        /// Returns a random DoorType
-        /// </summary>
-        /// <returns>Random DoorType</returns>
-        public static DoorWayType GenerateDoorType()
+        public static DoorWayType GenerateDoorType(Random random)
         {
-            return (DoorWayType)new Random().Next(-1, 3);
+            return (DoorWayType)random.Next(-1, 3);
         }
 
-        /// <summary>
-        /// Returns a random CardType.
-        /// </summary>
-        /// <returns>Random CardType</returns>
-        public static CardType GenerateCardType()
+        public static CardType GenerateCardType(Random random)
         {
-            return (CardType)new Random().Next(0, 4);
+            return (CardType)random.Next(0, 4);
         }
 
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="doorName"></param>
         [Obsolete("Please check else where?")]
         public static void CheckDoor(string doorName, Dictionary<string, DoorWayType> doors)
         {
@@ -163,7 +136,7 @@ namespace LabyrinthExplorer
             {
                 case DoorWayType.Open:
                     GameConsole.Printf("\nYou try the door and with some luck it opens.\n\n");
-                    GameLoop.ExploreNewRoom();
+                    new GameLoop(Gameplay.GameSession.CreateDefault(), new Gameplay.BaseGameplay(Gameplay.GameSession.CreateDefault())).ExploreNewRoom();
                     break;
                 case DoorWayType.Blocked:
                     GameConsole.Printf("The door is blocked board and won't budge.\n");

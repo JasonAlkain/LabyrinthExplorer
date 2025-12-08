@@ -1,48 +1,49 @@
-﻿using System;
+using System;
 using Enums;
 using LabyrinthExplorer.Gameplay;
 
 namespace Handlers
 {
-    public class Search : BaseGameplay
+    public class Search
     {
-        /// <summary>
-        /// This function handles what happens when you search a room.
-        /// </summary>
-        public static void Room()
-        {
-            // Check if the room has been searched.
-            if (!GameplayData.RoomRef.bSearched)
-            {
-                // Set this room to searched.
-                GameplayData.RoomRef.bSearched = true;
+        private readonly GameSession _session;
+        private readonly BaseGameplay _baseGameplay;
 
-                // Display what the player found in the room.
-                switch (GameplayData.RoomRef.Card)
+        public Search(GameSession session, BaseGameplay baseGameplay)
+        {
+            _session = session;
+            _baseGameplay = baseGameplay;
+        }
+
+        public void Room()
+        {
+            if (!_session.GameplayData.RoomRef.bSearched)
+            {
+                _session.GameplayData.RoomRef.bSearched = true;
+
+                switch (_session.GameplayData.RoomRef.Card)
                 {
                     case CardType.None:
-                        Printf("There is nothing in this room.\n");
+                        _baseGameplay.Printf("There is nothing in this room.\n");
                         break;
                     case CardType.Event:
-                        Printf("Something happens.\n");
+                        _baseGameplay.Printf("Something happens.\n");
                         break;
                     case CardType.Omen:
-                        Printf($"A card with the word {GameplayData.RoomRef.Card} is written on it.\n");
-                        GameplayData.RoomRef.HasCard = true;
+                        _baseGameplay.Printf($"A card with the word {_session.GameplayData.RoomRef.Card} is written on it.\n");
+                        _session.GameplayData.RoomRef.HasCard = true;
                         break;
                     case CardType.Item:
-                        Printf($"You found an {GameplayData.RoomRef.Card}. Maybe it will come in handy.\n");
-                        GameplayData.RoomRef.HasCard = true;
+                        _baseGameplay.Printf($"You found an {_session.GameplayData.RoomRef.Card}. Maybe it will come in handy.\n");
+                        _session.GameplayData.RoomRef.HasCard = true;
                         break;
                 }
 
             }
             else
             {
-                // If the player has already searched the room
-                // let them now what they found if anything.
                 string s;
-                switch (GameplayData.RoomRef.Card)
+                switch (_session.GameplayData.RoomRef.Card)
                 {
                     case CardType.None:
                         s = "This room had nothing in it.";
@@ -57,9 +58,9 @@ namespace Handlers
                         s = "You found an item in this room.";
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(GameplayData.RoomRef.Card), GameplayData.RoomRef.Card, null);
+                        throw new ArgumentOutOfRangeException(nameof(_session.GameplayData.RoomRef.Card), _session.GameplayData.RoomRef.Card, null);
                 }
-                Printf($"{s}\n");
+                _baseGameplay.Printf($"{s}\n");
             }
 
         }

@@ -1,53 +1,48 @@
-﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using Enums;
-using LabyrinthExplorer.Data;
+using LabyrinthExplorer.Utilities;
 using Utilities;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace LabyrinthExplorer
 {
     public class Player : PlayerData
     {
-        public static string Name { get; set; }
-        internal static Notifier<int> _Sanity = new Notifier<int>();
+        private readonly IConsoleService _console;
+        internal Notifier<int> _Sanity = new Notifier<int>();
 
-        public static int Sanity
+        public Player(IConsoleService console)
+        {
+            _console = console;
+            Name = string.Empty;
+            Sanity = 10;
+
+            Inventory = new List<Item>();
+            _Sanity.PropertyChanged += Score_PropertyChanged;
+        }
+
+        public string Name { get; set; }
+
+        public int Sanity
         {
             get { return _Sanity.Prop; }
             set { _Sanity.Prop = value; }
         }
 
-        //public static List<CardType> Cards;
-        public static List<Item> Inventory = new();
-
-        public Player()
-        {
-            Name = string.Empty;
-            Sanity = 10;
-            
-            Inventory = [];
-            _Sanity.PropertyChanged += Score_PropertyChanged;
-        }
+        public List<Item> Inventory { get; private set; }
 
         private void Score_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            // This method will be called whenever the Score property changes.
-            // You can update the UI or perform other actions here.
-            new Print($"Sanity changed to: {Sanity}");
+            _console.Write($"Sanity changed to: {Sanity}");
         }
 
-        public static void ShowInvetory() => 
-            Inventory.ForEach(item => new Print($"[ {item.Name} ] "));
+        public void ShowInventory()
+        {
+            Inventory.ForEach(item => _console.Write($"[ {item.Name} ] "));
+        }
 
         public override string ToString()
         {
-            string result;
-            result = $"{Name}";
-
-
-            return base.ToString();
+            return $"{Name}";
         }
     }
 
