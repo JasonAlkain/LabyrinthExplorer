@@ -10,3 +10,5 @@ You can find the packaged game on [itch.io](https://alkain-studios-llc.itch.io/c
 ```csharp
 var session = GameSession.CreateDefault(seed: 1234);
 ```
+
+Use the new `status` command in-game to review your current room, sanity, and inventory at any time.

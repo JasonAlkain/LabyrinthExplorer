@@ -10,6 +10,7 @@ namespace LabyrinthExplorer.Tests
         [InlineData("East", "east")]
         [InlineData("l", "quit")]
         [InlineData("Inventory", "inventory")]
+        [InlineData("stats", "status")]
         public void MapsGameplayAliases(string input, string expected)
         {
             Assert.True(CommandRegistry.TryMapGameplay(input, out var command));

@@ -74,6 +74,9 @@ namespace LabyrinthExplorer.Handlers
                 case "take":
                     _take.DrawCard(_session.GameplayData.RoomCard);
                     return true;
+                case "status":
+                    _baseGameplay.ShowStatus();
+                    return true;
                 case "inventory":
                     _session.Player.ShowInventory();
                     return true;
