@@ -1,14 +1,17 @@
+using System;
 using LabyrinthExplorer.Utilities;
 
 namespace LabyrinthExplorer.Gameplay
 {
-    public class GameSession
+    public class GameSession : IDisposable
     {
-        public GameSession(IConsoleService consoleService, IRandomProvider? randomProvider = null)
+        private bool _disposed;
+
+        public GameSession(IConsoleService consoleService, IRandomProvider? randomProvider = null, PlayerData? playerData = null)
         {
             Console = consoleService;
             RandomProvider = randomProvider ?? new RandomProvider();
-            Player = new Player(Console);
+            Player = new Player(Console, playerData ?? new PlayerData());
             GameplayData = new GameplayData();
         }
 
@@ -20,10 +23,46 @@ namespace LabyrinthExplorer.Gameplay
 
         public GameplayData GameplayData { get; }
 
+        public PlayerData CapturePlayerState()
+        {
+            return Player.ToData();
+        }
+
+        public void RestorePlayerState(PlayerData playerData)
+        {
+            Player.LoadFromData(playerData);
+        }
+
         public static GameSession CreateDefault(int? seed = null, IConsoleService? console = null)
         {
             var randomProvider = new RandomProvider(seed);
             return new GameSession(console ?? new SystemConsoleService(), randomProvider);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                Player.Dispose();
+            }
+
+            _disposed = true;
+        }
+
+        ~GameSession()
+        {
+            Dispose(false);
         }
     }
 }
