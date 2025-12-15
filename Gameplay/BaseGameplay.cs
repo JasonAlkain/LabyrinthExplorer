@@ -27,7 +27,7 @@ namespace LabyrinthExplorer.Gameplay
 
         public void Setup()
         {
-            int nameIndex = _session.Random.Next(0, Names.ListOfNames.Count - 1);
+            int nameIndex = _session.RandomProvider.Next(0, Names.ListOfNames.Count - 1);
             _session.Player.Name = Names.ListOfNames[nameIndex];
         }
 

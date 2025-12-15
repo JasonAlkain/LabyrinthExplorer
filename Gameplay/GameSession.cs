@@ -1,21 +1,20 @@
-using System;
 using LabyrinthExplorer.Utilities;
 
 namespace LabyrinthExplorer.Gameplay
 {
     public class GameSession
     {
-        public GameSession(IConsoleService consoleService, Random? random = null)
+        public GameSession(IConsoleService consoleService, IRandomProvider? randomProvider = null)
         {
             Console = consoleService;
-            Random = random ?? new Random();
+            RandomProvider = randomProvider ?? new RandomProvider();
             Player = new Player(Console);
             GameplayData = new GameplayData();
         }
 
         public IConsoleService Console { get; }
 
-        public Random Random { get; }
+        public IRandomProvider RandomProvider { get; }
 
         public Player Player { get; }
 
@@ -23,8 +22,8 @@ namespace LabyrinthExplorer.Gameplay
 
         public static GameSession CreateDefault(int? seed = null, IConsoleService? console = null)
         {
-            var random = seed.HasValue ? new Random(seed.Value) : new Random();
-            return new GameSession(console ?? new SystemConsoleService(), random);
+            var randomProvider = new RandomProvider(seed);
+            return new GameSession(console ?? new SystemConsoleService(), randomProvider);
         }
     }
 }
