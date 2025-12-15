@@ -11,7 +11,6 @@ namespace LabyrinthExplorer.Gameplay
         public Room RoomRef { get; set; }
         [Obsolete("Currently being refactored")]
         public int RoomCount { get; set; }
-        [Obsolete("Currently being refactored")]
         public CardType RoomCard { get; set; }
         public List<string> UserActions { get; set; }
         public List<Card> CardList { get; set; }

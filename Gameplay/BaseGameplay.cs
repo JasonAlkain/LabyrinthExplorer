@@ -79,10 +79,10 @@ namespace LabyrinthExplorer.Gameplay
             };
 
             if (_session.GameplayData.RoomRef.bSearched == false)
-                actions.Add("Search");
+                actions.Add("search");
 
             if (_session.GameplayData.RoomRef.HasCard)
-                actions.Add("Take");
+                actions.Add("take");
 
             _session.GameplayData.UserActions = actions;
         }
