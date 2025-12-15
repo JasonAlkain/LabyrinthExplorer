@@ -17,9 +17,9 @@ namespace Handlers
 
         public void DrawCard(CardType cardType)
         {
-            if (_session.GameplayData.UserActions.Contains("Take"))
+            if (_session.GameplayData.UserActions.Contains("take"))
             {
-                _session.GameplayData.UserActions.Remove("Take");
+                _session.GameplayData.UserActions.Remove("take");
 
                 switch (cardType)
                 {
