@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Enums;
 using LabyrinthExplorer.Data;
 using LabyrinthExplorer.Utilities;
@@ -75,7 +76,8 @@ namespace LabyrinthExplorer.Gameplay
                 "east",
                 "west",
                 "south",
-                "inventory"
+                "inventory",
+                "status",
             };
 
             if (_session.GameplayData.RoomRef.bSearched == false)
@@ -85,6 +87,24 @@ namespace LabyrinthExplorer.Gameplay
                 actions.Add("take");
 
             _session.GameplayData.UserActions = actions;
+        }
+
+        public void ShowStatus()
+        {
+            var room = _session.GameplayData.RoomRef;
+            var cardStatus = room.HasCard ? room.Card.ToString() : "None";
+            var searched = room.bSearched ? "Yes" : "No";
+            var inventoryNames = _session.Player.Inventory.Count == 0
+                ? "(empty)"
+                : string.Join(", ", _session.Player.Inventory.Select(i => i.Name));
+
+            Printf("\n--- Status ---\n");
+            Printf($"Adventurer: {_session.Player.Name}\n");
+            Printf($"Sanity: {_session.Player.Sanity}\n");
+            Printf($"Room #: {room.RoomID}\n");
+            Printf($"Room searched: {searched}\n");
+            Printf($"Room card: {cardStatus}\n");
+            Printf($"Inventory: {inventoryNames}\n");
         }
 
         public void CheckDoor(string doorName)

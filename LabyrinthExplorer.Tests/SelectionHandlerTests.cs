@@ -67,7 +67,36 @@ namespace LabyrinthExplorer.Tests
             Assert.Contains("quit", actions);
             Assert.Contains("search", actions);
             Assert.Contains("take", actions);
+            Assert.Contains("status", actions);
             Assert.DoesNotContain("(N)orth", actions);
+        }
+
+        [Fact]
+        public void InterpretInput_Status_PrintsSnapshot()
+        {
+            var console = new FakeConsoleService(new[] { string.Empty });
+            var playerData = new PlayerData { Name = "Tester", Sanity = 7 };
+            var session = new GameSession(console, new StaticRandomProvider(), playerData);
+            session.GameplayData.RoomRef = new Room
+            {
+                RoomID = 3,
+                Doors = new Dictionary<string, DoorWayType>(),
+                bSearched = true,
+                HasCard = true,
+                Card = CardType.Item,
+            };
+            session.Player.Inventory.Add(new Item { Name = "Lantern" });
+
+            var gameplay = new BaseGameplay(session);
+            var gameLoop = new GameLoop(session, gameplay);
+            var handler = new SelectionHandler(session, gameplay, gameLoop);
+
+            var keepRunning = handler.InterpretInput("status");
+
+            Assert.True(keepRunning);
+            Assert.Contains("Adventurer: Tester", console.Output.ToString());
+            Assert.Contains("Room #: 3", console.Output.ToString());
+            Assert.Contains("Inventory: Lantern", console.Output.ToString());
         }
     }
 }
