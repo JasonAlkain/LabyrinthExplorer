@@ -26,9 +26,10 @@ namespace GameplayNamespace
             _session.Console.Sleep(1000);
             _session.GameplayData.RoomRef = new Room();
 
-            _baseGameplay.BaseActions();
-
             _session.GameplayData.RoomRef.GenerateRoom(_session.RandomProvider, _session.Console);
+            _session.GameplayData.RoomCard = _session.GameplayData.RoomRef.Card;
+
+            _baseGameplay.BaseActions();
 
             _session.Console.Sleep(1250);
 

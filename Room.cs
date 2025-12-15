@@ -39,6 +39,7 @@ namespace LabyrinthExplorer
             GameConsole.Printf(s);
 
             Card = RoomID > 0 ? GenerateCardType(randomProvider) : CardType.None;
+            HasCard = Card != CardType.None;
         }
 
         public void GenerateRoom(IRandomProvider randomProvider, IConsoleService console)
@@ -83,6 +84,7 @@ namespace LabyrinthExplorer
             console.Write(roomInfo);
 
             Card = RoomID > 0 ? GenerateCardType(randomProvider) : CardType.None;
+            HasCard = Card != CardType.None;
         }
 
 
