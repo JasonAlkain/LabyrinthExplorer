@@ -10,7 +10,7 @@ namespace LabyrinthExplorer
     {
         static Dictionary<string, DoorWayType> mDoor { get; set; }
         [Obsolete("Use GenerateRoom instead")]
-        public void CreateRoom()
+        public void CreateRoom(IRandomProvider randomProvider)
         {
             if (RoomID < uint.MaxValue - 1)
                 RoomID++;
@@ -19,10 +19,10 @@ namespace LabyrinthExplorer
 
             Doors = new Dictionary<string, DoorWayType>
             {
-                { "North", GenerateDoorType(new Random()) },
-                { "East", GenerateDoorType(new Random()) },
-                { "West", GenerateDoorType(new Random()) },
-                { "South", GenerateDoorType(new Random()) }
+                { "North", GenerateDoorType(randomProvider) },
+                { "East", GenerateDoorType(randomProvider) },
+                { "West", GenerateDoorType(randomProvider) },
+                { "South", GenerateDoorType(randomProvider) }
             };
 
             if (!Doors.ContainsValue(DoorWayType.Open))
@@ -38,10 +38,10 @@ namespace LabyrinthExplorer
             s += "----------------------------------------------------\n";
             GameConsole.Printf(s);
 
-            Card = RoomID > 0 ? GenerateCardType(new Random()) : CardType.None;
+            Card = RoomID > 0 ? GenerateCardType(randomProvider) : CardType.None;
         }
 
-        public void GenerateRoom(Random random, IConsoleService console)
+        public void GenerateRoom(IRandomProvider randomProvider, IConsoleService console)
         {
             if (RoomID < uint.MaxValue - 1)
                 RoomID++;
@@ -56,18 +56,18 @@ namespace LabyrinthExplorer
                 { "South", DoorWayType.None }
             };
 
-            int doorCount = random.Next(1, 4);
+            int doorCount = randomProvider.Next(1, 4);
             List<string> directions = new() { "North", "East", "West", "South" };
 
-            string randomDirection = directions[random.Next(directions.Count)];
+            string randomDirection = directions[randomProvider.Next(directions.Count)];
             Doors[randomDirection] = DoorWayType.Open;
             directions.Remove(randomDirection);
             doorCount--;
 
             while (doorCount > 0 && directions.Count > 0)
             {
-                randomDirection = directions[random.Next(directions.Count)];
-                Doors[randomDirection] = (DoorWayType)random.Next(0, 3);
+                randomDirection = directions[randomProvider.Next(directions.Count)];
+                Doors[randomDirection] = (DoorWayType)randomProvider.Next(0, 3);
                 directions.Remove(randomDirection);
                 doorCount--;
             }
@@ -82,7 +82,7 @@ namespace LabyrinthExplorer
             roomInfo += "----------------------------------------------------\n";
             console.Write(roomInfo);
 
-            Card = RoomID > 0 ? GenerateCardType(random) : CardType.None;
+            Card = RoomID > 0 ? GenerateCardType(randomProvider) : CardType.None;
         }
 
 
@@ -118,14 +118,14 @@ namespace LabyrinthExplorer
             return roomDesc;
         }
 
-        public static DoorWayType GenerateDoorType(Random random)
+        public static DoorWayType GenerateDoorType(IRandomProvider randomProvider)
         {
-            return (DoorWayType)random.Next(-1, 3);
+            return (DoorWayType)randomProvider.Next(-1, 3);
         }
 
-        public static CardType GenerateCardType(Random random)
+        public static CardType GenerateCardType(IRandomProvider randomProvider)
         {
-            return (CardType)random.Next(0, 4);
+            return (CardType)randomProvider.Next(0, 4);
         }
 
 

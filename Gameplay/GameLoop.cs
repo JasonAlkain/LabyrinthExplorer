@@ -28,7 +28,7 @@ namespace GameplayNamespace
 
             _baseGameplay.BaseActions();
 
-            _session.GameplayData.RoomRef.GenerateRoom(_session.Random, _session.Console);
+            _session.GameplayData.RoomRef.GenerateRoom(_session.RandomProvider, _session.Console);
 
             _session.Console.Sleep(1250);
 

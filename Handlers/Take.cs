@@ -47,7 +47,7 @@ namespace Handlers
 
         private Card NewOmenCard()
         {
-            var rndOmenIndex = _session.Random.Next(0, BaseCardList.OmenCards.Count - 1);
+            var rndOmenIndex = _session.RandomProvider.Next(0, BaseCardList.OmenCards.Count - 1);
             Card omenCard = BaseCardList.OmenCards[rndOmenIndex];
             _session.Player.Inventory.Add(omenCard);
             _session.GameplayData.RoomRef.HasCard = false;
@@ -57,7 +57,7 @@ namespace Handlers
 
         private Card NewItemCard()
         {
-            var rndItemIndex = _session.Random.Next(0, BaseCardList.ItemCards.Count - 1);
+            var rndItemIndex = _session.RandomProvider.Next(0, BaseCardList.ItemCards.Count - 1);
             Card itemCard = BaseCardList.ItemCards[rndItemIndex];
             _session.Player.Inventory.Add(itemCard);
             _session.GameplayData.RoomRef.HasCard = false;

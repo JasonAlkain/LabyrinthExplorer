@@ -123,13 +123,13 @@ namespace LabyrinthExplorer.Handlers
                 switch (input)
                 {
                     case "Item":
-                        index = _session.Random.Next(0, BaseCardList.ItemCards.Count - 1);
+                        index = _session.RandomProvider.Next(0, BaseCardList.ItemCards.Count - 1);
                         _session.Player.Inventory.Add(BaseCardList.ItemCards[index]);
                         _baseGameplay.Printf("~{Added an item to your inventory}~.\n");
                         _baseGameplay.Printf($"~{BaseCardList.ItemCards[index].Name}~.\n");
                         break;
                     case "Omen":
-                        index = _session.Random.Next(0, BaseCardList.OmenCards.Count - 1);
+                        index = _session.RandomProvider.Next(0, BaseCardList.OmenCards.Count - 1);
                         _session.Player.Inventory.Add(BaseCardList.OmenCards[index]);
                         _baseGameplay.Printf("~{Added an Omen card to your inventory}~.\n");
                         _baseGameplay.Printf($"~{BaseCardList.OmenCards[index].Name}~.\n");
