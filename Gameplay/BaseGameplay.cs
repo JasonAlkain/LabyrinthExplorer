@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Enums;
 using LabyrinthExplorer.Data;
 using LabyrinthExplorer.Utilities;
-using Utilities;
 
 namespace LabyrinthExplorer.Gameplay
 {
@@ -71,13 +69,13 @@ namespace LabyrinthExplorer.Gameplay
         {
             var actions = new List<string>
             {
-                "(L)eave/(Q)uit",
-                "Look",
-                "(N)orth",
-                "(E)ast",
-                "(W)est",
-                "(S)outh",
-                "(I)nventory"
+                "quit",
+                "look",
+                "north",
+                "east",
+                "west",
+                "south",
+                "inventory"
             };
 
             if (_session.GameplayData.RoomRef.bSearched == false)
@@ -148,22 +146,18 @@ namespace LabyrinthExplorer.Gameplay
 
         public string ReadInput()
         {
-            StringBuilder sb = new();
+            string renderedActions = CommandRegistry.FormatActions(_session.GameplayData.UserActions);
 
-            foreach (string action in _session.GameplayData.UserActions)
-            {
-                sb.Append($"[{action}]");
-            }
-
-            Printf($"\n[Actions ~|{sb}|~ ]");
+            Printf($"\n[Actions ~|{renderedActions}|~ ]");
 
             Printf("\n#>| ");
             var userIn = _console.ReadLine() ?? string.Empty;
-            _session.GameplayData.UserInput.Prop = userIn;
+            var normalized = CommandRegistry.Normalize(userIn);
+            _session.GameplayData.UserInput.Prop = normalized;
 
             _console.Sleep(500);
 
-            return Utils.Capitalize(_session.GameplayData.UserInput.Prop.ToLower());
+            return normalized;
         }
 
         public void Printf(string s) => _console.Write(s);

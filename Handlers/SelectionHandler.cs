@@ -1,9 +1,9 @@
 using System;
-using Enums;
-using LabyrinthExplorer;
 using GameplayNamespace;
+using LabyrinthExplorer;
 using LabyrinthExplorer.Data;
 using LabyrinthExplorer.Gameplay;
+using LabyrinthExplorer.Utilities;
 
 namespace LabyrinthExplorer.Handlers
 {
@@ -32,145 +32,133 @@ namespace LabyrinthExplorer.Handlers
 
         public void Actions()
         {
-            while (true)
+            bool running = true;
+
+            while (running)
             {
                 _baseGameplay.BaseActions();
-                InterpretInput(_baseGameplay.ReadInput());
+                running = InterpretInput(_baseGameplay.ReadInput());
             }
         }
 
-        protected void InterpretInput(string input)
+        internal bool InterpretInput(string input)
         {
-            if (_session.GameplayData.UserActions.Contains(input))
+            if (!CommandRegistry.TryMapGameplay(input, out var command) ||
+                !_session.GameplayData.UserActions.Contains(command))
             {
-                if (input == "Dev")
-                {
-                    DevOptions();
-                    return;
-                }
-
-                switch (input)
-                {
-                    case "N":
-                    case "North":
-                        input = "North";
-                        _baseGameplay.CheckDoor(input);
-                        break;
-                    case "E":
-                    case "East":
-                        input = "East";
-                        _baseGameplay.CheckDoor(input);
-                        break;
-                    case "W":
-                    case "West":
-                        input = "West";
-                        _baseGameplay.CheckDoor(input);
-                        break;
-                    case "S":
-                    case "South":
-                        input = "South";
-                        _baseGameplay.CheckDoor(input);
-                        break;
-                    case "Use":
-                        _baseGameplay.Printf("Not available yet.\n");
-                        break;
-                    case "Look":
-                        _baseGameplay.Printf("\n");
-                        _baseGameplay.PrintDoors();
-                        break;
-                    case "Search":
-                        _search.Room();
-                        break;
-                    case "Take":
-                        _take.DrawCard(_session.GameplayData.RoomCard);
-                        break;
-                    case "I":
-                    case "Inventory":
-                        _session.Player.ShowInventory();
-                        break;
-                    case "Q":
-                    case "L":
-                    case "Quit":
-                    case "Leave":
-                        LeaveGame();
-                        break;
-                    default:
-                        _baseGameplay.Printf("\nThat command is not recognized.");
-                        _session.Console.ReadKey(true);
-                        _baseGameplay.Printf("\n\n");
-                        break;
-                }
-            }
-            else
-            {
-                _baseGameplay.Printf("\nThat command is not recognized.");
-                _session.Console.ReadKey(true);
-                _baseGameplay.Printf("\n\n");
+                PrintUnrecognized();
+                return true;
             }
 
-
+            switch (command)
+            {
+                case "dev":
+                    HandleDevOptions();
+                    return true;
+                case "north":
+                case "east":
+                case "west":
+                case "south":
+                    _baseGameplay.CheckDoor(char.ToUpper(command[0]) + command[1..]);
+                    return true;
+                case "use":
+                    _baseGameplay.Printf("Not available yet.\n");
+                    return true;
+                case "look":
+                    _baseGameplay.Printf("\n");
+                    _baseGameplay.PrintDoors();
+                    return true;
+                case "search":
+                    _search.Room();
+                    return true;
+                case "take":
+                    _take.DrawCard(_session.GameplayData.RoomCard);
+                    return true;
+                case "inventory":
+                    _session.Player.ShowInventory();
+                    return true;
+                case "quit":
+                    return HandleLeaveGame();
+                default:
+                    PrintUnrecognized();
+                    return true;
+            }
         }
 
-        protected void DevOptions()
+        private void HandleDevOptions()
         {
-            _session.GameplayData.UserActions = ["Item", "Omen", "Leave"];
-            while (true)
+            _session.GameplayData.UserActions = ["item", "omen", "leave"];
+            bool inDevMode = true;
+
+            while (inDevMode)
             {
                 int index;
                 _baseGameplay.Printf("What would you like to do?");
                 string input = _baseGameplay.ReadInput();
 
-                switch (input)
+                if (!CommandRegistry.TryMapDev(input, out var command) ||
+                    !_session.GameplayData.UserActions.Contains(command))
                 {
-                    case "Item":
+                    PrintUnrecognized();
+                    continue;
+                }
+
+                switch (command)
+                {
+                    case "item":
                         index = _session.RandomProvider.Next(0, BaseCardList.ItemCards.Count - 1);
                         _session.Player.Inventory.Add(BaseCardList.ItemCards[index]);
                         _baseGameplay.Printf("~{Added an item to your inventory}~.\n");
                         _baseGameplay.Printf($"~{BaseCardList.ItemCards[index].Name}~.\n");
                         break;
-                    case "Omen":
+                    case "omen":
                         index = _session.RandomProvider.Next(0, BaseCardList.OmenCards.Count - 1);
                         _session.Player.Inventory.Add(BaseCardList.OmenCards[index]);
                         _baseGameplay.Printf("~{Added an Omen card to your inventory}~.\n");
                         _baseGameplay.Printf($"~{BaseCardList.OmenCards[index].Name}~.\n");
                         break;
-                    case "Leave":
-                        Actions();
-                        break;
-                    default:
-                        _baseGameplay.Printf("\nThat command is not recognized.");
-                        _session.Console.ReadKey(true);
-                        _baseGameplay.Printf("\n\n");
+                    case "leave":
+                        inDevMode = false;
                         break;
                 }
             }
 
         }
 
-        public void LeaveGame()
+        private bool HandleLeaveGame()
         {
             _baseGameplay.Printf("Are you sure you want to leave the game?");
             _baseGameplay.Printf("You will have to start from square one if you do.");
 
-            _session.GameplayData.UserActions = ["Yes", "No"];
+            _session.GameplayData.UserActions = ["yes", "no"];
 
-            switch (_baseGameplay.ReadInput())
+            while (true)
             {
-                case "Yes":
+                var input = _baseGameplay.ReadInput();
+
+                if (!CommandRegistry.TryMapConfirmation(input, out var response) ||
+                    !_session.GameplayData.UserActions.Contains(response))
+                {
+                    PrintUnrecognized();
+                    continue;
+                }
+
+                if (response == "yes")
+                {
                     _session.Console.Clear();
                     _returnToMenu?.Invoke();
-                    break;
-                case "No":
-                    Actions();
-                    break;
-                default:
-                    _baseGameplay.Printf("\nThat command is not recognized.");
-                    _session.Console.ReadKey(true);
-                    _baseGameplay.Printf("\n\n");
-                    break;
+                    return false;
+                }
+
+                return true;
             }
+        }
 
-
+        private void PrintUnrecognized()
+        {
+            _baseGameplay.Printf("\nThat command is not recognized.");
+            _session.Console.ReadKey(true);
+            _baseGameplay.Printf("\n\n");
         }
     }
 }

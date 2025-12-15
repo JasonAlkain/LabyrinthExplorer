@@ -26,53 +26,52 @@ namespace Handlers
         {
             string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
-            _session.GameplayData.UserActions = new List<string>() { "New Game", "Load", "Quit" };
-            StringBuilder sb = new StringBuilder();
-            _session.GameplayData.UserActions.ForEach(action => sb.Append($"\n [{action}]"));
+            bool running = true;
 
-            Printf("\n\n");
-            Printf($"\n[  Version: {version}  ]\n");
-            Printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
-            Printf("~~~~~~~~~~ Labyrinth Explorer ~~~~~~~~~~\n");
-            Printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n");
-            Printf("~~~~~~~~~~~~~~~~~~~~~\n");
-            Printf("~~~~~ Main Menu ~~~~~\n");
-            Printf("~~~~~~~~~~~~~~~~~~~~~");
-            Printf($"{sb.ToString()}\n");
-            Printf("\n#>| ");
-
-            _session.GameplayData.Input = _session.Console.ReadLine();
-            _session.GameplayData.Input = _session.GameplayData.Input.ToLower();
-
-            switch (_session.GameplayData.Input)
+            while (running)
             {
-                case "n":
-                case "new":
-                case "new game":
-                    _session.Console.Clear();
-                    _gameplay.NewGame();
-                    break;
-                case "l":
-                case "load":
-                case "load game":
-                    Printf("\n\nThis option is not ready yet.");
-                    Printf("\n#>| ");
-                    _session.Console.ReadKey(true);
-                    _session.Console.Clear();
-                    _session.Console.Sleep(500);
-                    Run();
-                    break;
-                case "e":
-                case "q":
-                case "exit":
-                case "quit":
-                    _gameplay.Quit();
-                    break;
-                default:
-                    _session.Console.Clear();
-                    Run();
-                    break;
+                _session.GameplayData.UserActions = new List<string>() { "new", "load", "quit" };
+                StringBuilder sb = new StringBuilder();
+                sb.Append(CommandRegistry.FormatActions(_session.GameplayData.UserActions));
 
+                Printf("\n\n");
+                Printf($"\n[  Version: {version}  ]\n");
+                Printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+                Printf("~~~~~~~~~~ Labyrinth Explorer ~~~~~~~~~~\n");
+                Printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n");
+                Printf("~~~~~~~~~~~~~~~~~~~~~\n");
+                Printf("~~~~~ Main Menu ~~~~~\n");
+                Printf("~~~~~~~~~~~~~~~~~~~~~");
+                Printf($"{sb}\n");
+                Printf("\n#>| ");
+
+                string input = _session.Console.ReadLine();
+
+                if (!CommandRegistry.TryMapMenu(input, out var command))
+                {
+                    _session.Console.Clear();
+                    continue;
+                }
+
+                switch (command)
+                {
+                    case "new":
+                        _session.Console.Clear();
+                        _gameplay.NewGame();
+                        running = false;
+                        break;
+                    case "load":
+                        Printf("\n\nThis option is not ready yet.");
+                        Printf("\n#>| ");
+                        _session.Console.ReadKey(true);
+                        _session.Console.Clear();
+                        _session.Console.Sleep(500);
+                        break;
+                    case "quit":
+                        _gameplay.Quit();
+                        running = false;
+                        break;
+                }
             }
         }
 
