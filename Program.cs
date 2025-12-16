@@ -1,6 +1,7 @@
 using GameplayNamespace;
 using Handlers;
 using LabyrinthExplorer.Gameplay;
+using LabyrinthExplorer.Handlers;
 using LabyrinthExplorer.Utilities;
 
 namespace LabyrinthExplorer

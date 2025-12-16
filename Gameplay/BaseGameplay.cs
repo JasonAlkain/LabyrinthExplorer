@@ -4,6 +4,7 @@ using System.Linq;
 using Enums;
 using LabyrinthExplorer.Data;
 using LabyrinthExplorer.Utilities;
+using GameplayNamespace;
 
 namespace LabyrinthExplorer.Gameplay
 {

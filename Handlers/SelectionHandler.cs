@@ -1,5 +1,6 @@
 using System;
 using GameplayNamespace;
+using Handlers;
 using LabyrinthExplorer;
 using LabyrinthExplorer.Data;
 using LabyrinthExplorer.Gameplay;
