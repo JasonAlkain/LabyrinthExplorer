@@ -24,11 +24,11 @@ namespace Handlers
                 switch (cardType)
                 {
                     case CardType.Omen:
-                        _session.Player.Inventory.Add(NewOmenCard());
+                        NewOmenCard();
                         break;
 
                     case CardType.Item:
-                        _session.Player.Inventory.Add(NewItemCard());
+                        NewItemCard();
                         break;
 
                     default:
