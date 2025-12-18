@@ -1,8 +1,5 @@
-using GameplayNamespace;
-using Handlers;
-using LabyrinthExplorer.Gameplay;
-using LabyrinthExplorer.Handlers;
-using LabyrinthExplorer.Utilities;
+using System;
+using LabyrinthExplorer.Infrastructure;
 
 namespace LabyrinthExplorer
 {
@@ -10,25 +7,35 @@ namespace LabyrinthExplorer
     {
         static void Main(string[] args)
         {
-            var console = new SystemConsoleService();
-            var session = GameSession.CreateDefault(console: console);
-
-            var gameplay = new BaseGameplay(session);
-            var gameLoop = new GameLoop(session, gameplay);
-            var selectionHandler = new SelectionHandler(session, gameplay, gameLoop);
-
-            gameplay.RegisterGameLoop(gameLoop);
-            gameLoop.RegisterSelectionHandler(selectionHandler);
-            selectionHandler.RegisterMenu(() =>
+            try
             {
-                var menuFromGame = new Menu(session, gameplay, gameLoop, selectionHandler);
-                menuFromGame.Run();
-            });
+                var options = ParseArguments(args);
+                using var application = GameBuilder.Build(options);
+                application.Run();
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"An error occurred while starting the game: {ex.Message}");
+            }
+        }
 
-            gameplay.Setup();
+        private static GameBuilderOptions ParseArguments(string[] args)
+        {
+            var options = new GameBuilderOptions();
 
-            var menu = new Menu(session, gameplay, gameLoop, selectionHandler);
-            menu.Run();
+            for (int i = 0; i < args.Length; i++)
+            {
+                if (args[i].Equals("--seed", StringComparison.OrdinalIgnoreCase) && i + 1 < args.Length)
+                {
+                    if (int.TryParse(args[i + 1], out var seed))
+                    {
+                        options.Seed = seed;
+                        i++;
+                    }
+                }
+            }
+
+            return options;
         }
     }
 }
