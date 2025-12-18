@@ -57,20 +57,18 @@ namespace LabyrinthExplorer
                 { "South", DoorWayType.None }
             };
 
-            int doorCount = randomProvider.Next(1, 4);
+            int doorCount = randomProvider.Next(1, 4) - 1;
             List<string> directions = new() { "North", "East", "West", "South" };
 
             string randomDirection = directions[randomProvider.Next(directions.Count)];
             Doors[randomDirection] = DoorWayType.Open;
             directions.Remove(randomDirection);
-            doorCount--;
 
-            while (doorCount > 0 && directions.Count > 0)
+            for (int i = 0; i < doorCount && directions.Count > 0; i++)
             {
                 randomDirection = directions[randomProvider.Next(directions.Count)];
                 Doors[randomDirection] = (DoorWayType)randomProvider.Next(0, 3);
                 directions.Remove(randomDirection);
-                doorCount--;
             }
 
             Header = SetRoomHeader();
