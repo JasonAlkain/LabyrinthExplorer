@@ -7,11 +7,18 @@ namespace LabyrinthExplorer.Gameplay
     {
         private bool _disposed;
 
-        public GameSession(IConsoleService consoleService, IRandomProvider? randomProvider = null, PlayerData? playerData = null)
+        public GameSession(
+            IConsoleService consoleService,
+            IRandomProvider? randomProvider = null,
+            PlayerData? playerData = null,
+            IPlayerObserver? playerObserver = null,
+            IPlayerStateMapper? playerStateMapper = null)
         {
             Console = consoleService;
             RandomProvider = randomProvider ?? new RandomProvider();
-            Player = new Player(Console, playerData ?? new PlayerData());
+            var mapper = playerStateMapper ?? new PlayerStateMapper();
+            var observer = playerObserver ?? new ConsolePlayerObserver(Console);
+            Player = new Player(mapper, observer, playerData ?? new PlayerData());
             GameplayData = new GameplayData();
         }
 
