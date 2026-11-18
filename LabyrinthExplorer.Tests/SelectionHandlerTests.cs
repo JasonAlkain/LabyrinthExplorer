@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Enums;
 using GameplayNamespace;
 using LabyrinthExplorer;
+using LabyrinthExplorer.Data;
 using LabyrinthExplorer.Gameplay;
 using LabyrinthExplorer.Handlers;
 using LabyrinthExplorer.Tests.TestUtilities;
@@ -91,6 +92,7 @@ namespace LabyrinthExplorer.Tests
             var gameLoop = new GameLoop(session, gameplay);
             var handler = new SelectionHandler(session, gameplay, gameLoop);
 
+            gameplay.BaseActions();
             var keepRunning = handler.InterpretInput("status");
 
             Assert.True(keepRunning);
